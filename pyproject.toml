@@ -19,6 +19,40 @@ build-backend = "poetry.core.masonry.api"
 
 
 #######################################################
+# LINTERS - RUFF | Isort | Black
+#######################################################
+[tool.ruff]
+line-length = 120
+lint.select = ["E", "F", "I"]
+# select = ["A", "B", "C", "D", "E", "F", "I", "N", "PL", "RUF", "S", "T", "W"]
+lint.fixable = ["ALL"]
+lint.ignore = ["D203", "D213", "T201", "PLE1205"]
+exclude = [
+    "tests/*",
+    ".venv/*",
+    "build",
+    "dist",
+    "node_modules"
+]
+lint.per-file-ignores = {}
+# Same as Black.
+
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# [tool.ruff.lint.pydocstyle]
+# convertion="google"
+
+
+[tool.black]
+line-length = 120
+extend-exclude='''
+.temp-*
+| venv
+| .venv
+'''
+
+#######################################################
 # Poetry Scripts & Taskipy
 #######################################################
 [tool.poetry.scripts]

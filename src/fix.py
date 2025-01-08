@@ -1,13 +1,10 @@
 #!/usr/bin/env python3.6
+import os
 import subprocess
 import sys
-import os
-import glob
-from tqdm import tqdm
+from pathlib import Path
 
-import glob
-import json
-from pathlib import Path, os, sys
+from tqdm import tqdm
 
 __THIS_PATH__ = (
     Path(os.path.dirname(sys.executable)) if getattr(sys, "frozen", False) else Path(os.path.dirname(__file__))
@@ -16,19 +13,21 @@ __THIS_PATH__ = (
 ORIGEM = Path("/mnt/c/dev/fix_video/origem")
 DESTINO = Path("/mnt/c/dev/fix_video/destino")
 
-if not DESTINO.exists() :
+if not DESTINO.exists():
     DESTINO.mkdir(parents=True, exist_ok=True)
+
 
 def fix_video_using_ffmpeg(f, output_dir):
     out_f = os.path.join(output_dir, os.path.basename(f))
     # ffmpeg -err_detect ignore_err -i video.mkv -c copy video_fixed.mkv
-    exit_code = subprocess.call(['ffmpeg', '-err_detect', 'ignore_err', '-i', f, '-c', 'copy', out_f])
-    print(f'🟢🟢 fixed video:{f}, output: {out_f}, exist_code: {exit_code}🟢🟢/n/n/n/n')
+    exit_code = subprocess.call(["ffmpeg", "-err_detect", "ignore_err", "-i", f, "-c", "copy", out_f])
+    print(f"🟢🟢 fixed video:{f}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n\n\n")
     f.unlink()
 
 
 def is_video_file(f):
-    return f.lower().endswith((('.mp4', '.mkv')))
+    return f.lower().endswith(((".mp4", ".mkv")))
+
 
 def fix_videos(_input_dir, output_dir):
     for f in os.listdir(_input_dir):
@@ -36,10 +35,10 @@ def fix_videos(_input_dir, output_dir):
             fix_videos(os.path.join(_input_dir, f), output_dir)
         if not is_video_file(f):
             continue
-        fix_video_using_ffmpeg(os.path.join(_input_dir, f), output_dir)    
+        fix_video_using_ffmpeg(os.path.join(_input_dir, f), output_dir)
 
 
-for file in tqdm( ORIGEM.glob("**/*.mp4")):
+for file in tqdm(ORIGEM.glob("**/*.mp4")):
     if file.is_file():
         fix_video_using_ffmpeg(file, DESTINO)
 
@@ -49,8 +48,8 @@ for file in tqdm( ORIGEM.glob("**/*.mp4")):
 #     if len(sys.argv) < 2:
 #         print('Usage: video-errors-fixer.py <input-dir> <output-dir>')
 #         sys.exit(1)
-#     input_dir = sys.argv[1]    
-#     output_dir = sys.argv[2]    
+#     input_dir = sys.argv[1]
+#     output_dir = sys.argv[2]
 #     if input_dir is output_dir:
 #         print(f'both input and output dir are the same: {input_dir}')
 #         sys.exit(1)
