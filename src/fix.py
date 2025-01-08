@@ -21,7 +21,7 @@ def fix_video_using_ffmpeg(f, output_dir):
     out_f = os.path.join(output_dir, os.path.basename(f))
     # ffmpeg -err_detect ignore_err -i video.mkv -c copy video_fixed.mkv
     exit_code = subprocess.call(["ffmpeg", "-err_detect", "ignore_err", "-i", f, "-c", "copy", out_f])
-    print(f"🟢🟢 fixed video:{f}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n\n\n")
+    print(f"\n🟢🟢 fixed video:{f}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n")
     f.unlink()
 
 
