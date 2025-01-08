@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "fix_video"
+version = "0.1.0"
+description = ""
+authors = ["Fabio Kfouri <kfouri.fabio@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+taskipy = "^1.14.1"
+tqdm = "^4.67.1"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.8.6"
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+#######################################################
+# Poetry Scripts & Taskipy
+#######################################################
+[tool.poetry.scripts]
+syncro_git = "src.fix:syncro_git"
+
+[tool.taskipy.tasks]
+pre_lint = { cmd = "echo 'Black' && black .", help = "apply the black linter"}
+lint = { cmd = "ruff check . --fix", help = "apply ruff linter"}
