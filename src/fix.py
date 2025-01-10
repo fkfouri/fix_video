@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.6
 import os
 import subprocess
 import sys
@@ -10,7 +9,7 @@ __THIS_PATH__ = (
     Path(os.path.dirname(sys.executable)) if getattr(sys, "frozen", False) else Path(os.path.dirname(__file__))
 )
 
-ORIGEM = Path("/mnt/c/dev/fix_video/origem")
+ORIGEM = Path("/mnt/c/Users/fkfouri/Downloads")
 DESTINO = Path("/mnt/c/dev/fix_video/destino")
 
 if not DESTINO.exists():
