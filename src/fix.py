@@ -10,7 +10,10 @@ __THIS_PATH__ = (
 )
 
 ORIGEM = Path("/mnt/c/Users/fkfouri/Downloads")
+ORIGEM = Path("/mnt/c/Users/fkfouri/OneDrive/Imagens/Screenpresso")
 DESTINO = Path("/mnt/c/dev/fix_video/destino")
+FIX_TYPE = "compress"
+
 
 if not DESTINO.exists():
     DESTINO.mkdir(parents=True, exist_ok=True)
@@ -18,8 +21,12 @@ if not DESTINO.exists():
 
 def fix_video_using_ffmpeg(f, output_dir):
     out_f = os.path.join(output_dir, os.path.basename(f))
+    fixed_types = {
+        "error": ["ffmpeg", "-err_detect", "ignore_err", "-i", f, "-c", "copy", out_f],
+        "compress": ["ffmpeg", "-i", f, "-r", "24", "-b:v", "400k", "-b:a", "128k", "-ar", "44100", "-y", out_f],
+        }
     # ffmpeg -err_detect ignore_err -i video.mkv -c copy video_fixed.mkv
-    exit_code = subprocess.call(["ffmpeg", "-err_detect", "ignore_err", "-i", f, "-c", "copy", out_f])
+    exit_code = subprocess.call(fixed_types[FIX_TYPE])
     print(f"\n🟢🟢 fixed video:{f}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n")
     f.unlink()
 
@@ -41,22 +48,4 @@ for file in tqdm(ORIGEM.glob("**/*.mp4")):
     if file.is_file():
         fix_video_using_ffmpeg(file, DESTINO)
 
-# def start(input_dir, output_dir):
 
-# if __name__ == '__main__':
-#     if len(sys.argv) < 2:
-#         print('Usage: video-errors-fixer.py <input-dir> <output-dir>')
-#         sys.exit(1)
-#     input_dir = sys.argv[1]
-#     output_dir = sys.argv[2]
-#     if input_dir is output_dir:
-#         print(f'both input and output dir are the same: {input_dir}')
-#         sys.exit(1)
-#     if not os.path.isdir(input_dir):
-#         print(f'input dir is not a directory: {input_dir}')
-#         sys.exit(1)
-#     if not os.path.isdir(output_dir):
-#         print(f'output dir is not a directory: {output_dir}')
-#         sys.exit(1)
-
-#     fix_videos(input_dir, output_dir)
