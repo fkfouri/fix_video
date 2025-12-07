@@ -1,7 +1,10 @@
 import os
 import subprocess
 import sys
+import json
 from pathlib import Path
+from datetime import datetime
+import time
 
 from tqdm import tqdm
 
@@ -11,15 +14,35 @@ __THIS_PATH__ = (
 
 ORIGEM = Path("/mnt/c/Users/fkfouri/Downloads")
 ORIGEM = Path("/mnt/c/Users/fkfouri/OneDrive/Imagens/Screenpresso")
+DESTINO = Path("/mnt/c/dev/fix_video/origem")
 DESTINO = Path("/mnt/c/dev/fix_video/destino")
+REPORT = __THIS_PATH__ / "__compress_report_ffmpeg.json"
+REMOVE = True
 FIX_TYPE = "compress"
+FIX_FLAG = ".fix.up"
+IGNORE = r".fix\.mp4$"
+SPEED_IGNORE = r".fix\.up\.mp4$"
+
+SPEED_UP = [
+    "-vf",
+    "setpts=PTS/1.75",
+    "-af",
+    "atempo=1.75",
+]
 
 
 if not DESTINO.exists():
     DESTINO.mkdir(parents=True, exist_ok=True)
 
 
+def append_json_line(new_item):
+    with open(REPORT, "a", encoding="utf-8") as f:
+        f.write(json.dumps(new_item, ensure_ascii=False))
+        f.write("\n")
+
+
 def fix_video_using_ffmpeg(f, output_dir):
+    # new_name = F
     out_f = os.path.join(output_dir, os.path.basename(f))
     fixed_types = {
         "error": ["ffmpeg", "-err_detect", "ignore_err", "-i", f, "-c", "copy", out_f],

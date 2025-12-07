@@ -1,21 +1,27 @@
-[tool.poetry]
-name = "fix_video"
+[project]
+name = "video"
 version = "0.1.0"
 description = ""
-authors = ["Fabio Kfouri <kfouri.fabio@gmail.com>"]
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pyinstaller>=6.17.0",
+    "taskipy>=1.14.1",
+    "tqdm>=4.67.1",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-taskipy = "^1.14.1"
-tqdm = "^4.67.1"
+# [tool.poetry.dependencies]
+# python = "^3.14"
+# taskipy = "^1.14.1"
+# tqdm = "^4.67.1"
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.8.6"
-black = "^24.10.0"
+# [tool.poetry.group.dev.dependencies]
+# ruff = "^0.8.6"
+# black = "^24.10.0"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+# [build-system]
+# requires = ["poetry-core>=1.0.0"]
+# build-backend = "poetry.core.masonry.api"
 
 
 #######################################################
@@ -27,6 +33,11 @@ lint.select = ["E", "F", "I"]
 # select = ["A", "B", "C", "D", "E", "F", "I", "N", "PL", "RUF", "S", "T", "W"]
 lint.fixable = ["ALL"]
 lint.ignore = ["D203", "D213", "T201", "PLE1205"]
+lint.per-file-ignores = {}
+# Same as Black.
+
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 exclude = [
     "tests/*",
     ".venv/*",
@@ -34,11 +45,6 @@ exclude = [
     "dist",
     "node_modules"
 ]
-lint.per-file-ignores = {}
-# Same as Black.
-
-# Allow unused variables when underscore-prefixed.
-lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 # [tool.ruff.lint.pydocstyle]
 # convertion="google"
