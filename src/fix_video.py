@@ -207,7 +207,7 @@ if __name__ == "__main__":
                 continue
 
             with open(__THIS_PATH__ / "__file_info.json", "a", encoding="utf-8") as f:
-                f.write(json.dumps(info, ensure_ascii=False))
+                f.write(json.dumps(_info, ensure_ascii=False))
                 f.write("\n")
                 TOTAL_FILES += 1
 
