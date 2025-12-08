@@ -2,3 +2,12 @@
 .git
 *.lock
 /src/*.json
+__pycache__
+
+
+# Pyinstaller
+*.manifest
+*.spec
+*.exe
+build
+dist

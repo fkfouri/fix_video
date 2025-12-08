@@ -10,18 +10,13 @@ dependencies = [
     "tqdm>=4.67.1",
 ]
 
-# [tool.poetry.dependencies]
-# python = "^3.14"
-# taskipy = "^1.14.1"
-# tqdm = "^4.67.1"
+[dependency-groups]
+dev = [
+    "black>=25.12.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.8",
+]
 
-# [tool.poetry.group.dev.dependencies]
-# ruff = "^0.8.6"
-# black = "^24.10.0"
-
-# [build-system]
-# requires = ["poetry-core>=1.0.0"]
-# build-backend = "poetry.core.masonry.api"
 
 
 #######################################################
@@ -67,9 +62,5 @@ syncro_git = "src.fix:syncro_git"
 [tool.taskipy.tasks]
 pre_lint = { cmd = "echo 'Black' && black .", help = "apply the black linter"}
 lint = { cmd = "ruff check . --fix", help = "apply ruff linter"}
-
-[dependency-groups]
-dev = [
-    "black>=25.12.0",
-    "ruff>=0.14.8",
-]
+tree = "uv tree > .pip.tree"
+gen_fix_video = "uv run pyinstaller --onefile --clean --name fix_video src/fix_video.py --name fix_video.exe --target-arch x86_64"
