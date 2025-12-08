@@ -156,6 +156,13 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir):
             + build_metadata_args()
             + [str(out_f)]
         )
+    elif FIX_TYPE == "convert":
+        ...
+        # Converte MOV (ou qualquer) → .mpeg (H.264/AAC)
+        # cmd += ["-i", str(infile)]
+        # cmd += ["-c:v", "libx264", "-crf", "23", "-preset", "medium"]
+        # cmd += ["-c:a", "aac", "-b:a", "128k", "-vf", "format=yuv420p"]
+        # cmd += get_metadata() + [str(outfile)]
 
     else:
         raise ValueError("FIX_TYPE deve ser 'error' ou 'compress'")
