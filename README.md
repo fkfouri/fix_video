@@ -1,9 +1,25 @@
 # Fix Video
 
-Identificado que os videos ficam ruim depois de baixar via  CocoCut.
+Identificado que os videos ficam ruim depois de baixar via CocoCut.
 
 Baseado no codigo https://gist.github.com/masgari/2ba5f8fb19a735ffbf066022090ae128
 
+RODAR EM WINDOWS para gerar .EXE
+
+
+## Setup
+```
+uv self update
+
+uv sync --no-cache --native-tls
+
+
+uv python list
+
+python 
+```
+
+## Instalar o ffmpeg
 
 ```bash
 

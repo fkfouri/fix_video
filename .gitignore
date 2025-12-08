@@ -2,3 +2,5 @@
 .git
 *.lock
 /src/*.json
+
+origem
