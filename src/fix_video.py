@@ -2,55 +2,30 @@ import json
 import os
 import re
 import subprocess
-import sys
 import time
 from datetime import datetime
 from pathlib import Path
 
 from tqdm import tqdm
 
-__THIS_PATH__ = (
-    Path(os.path.dirname(sys.executable)) if getattr(sys, "frozen", False) else Path(os.path.dirname(__file__))
+from setup import (
+    __THIS_PATH__,
+    ACTUAL_PATH,
+    CUSTOM_METADATA,
+    DESTINO,
+    FIX_FLAG,
+    FIX_TYPE,
+    ORIGEM,
+    PADROES,
+    REGULAR_IGNORE,
+    REMOVE,
+    REPORT_COMPRESS,
+    REPORT_FFPROBE,
+    SPEED_IGNORE,
+    SPEED_UP,
 )
 
-ACTUAL_PATH = Path.cwd()
-ORIGEM = ACTUAL_PATH
-DESTINO = ACTUAL_PATH
-
-
-# # ORIGEM = Path("/mnt/c/Users/fkfouri/Downloads")
-# # ORIGEM = Path("/mnt/c/Users/fkfouri/OneDrive/Imagens/Screenpresso")
-# ORIGEM = Path("/mnt/c/dev/fix_video/origem")
-# # DESTINO = Path("/mnt/c/dev/fix_video/destino")
-# DESTINO = Path("/mnt/c/dev/fix_video/origem")
-
-REPORT = __THIS_PATH__ / "__compress_report_ffmpeg.json"
-REMOVE = True
-FIX_TYPE = "compress"
-FIX_FLAG = ".fix.up"
-IGNORE = r".fix\.mp4$"
-SPEED_IGNORE = r".fix\.up\.mp4$"
 TOTAL_FILES = 0
-
-# METADADOS que serão adicionados em TODOS os vídeos processados
-CUSTOM_METADATA = {
-    "year": datetime.now().year,
-    "date": datetime.now().strftime("%Y-%m-%d"),
-    "comment": "Acelerado 1.75× com FFmpeg (setpts + atempo)",
-    "description": "Vídeo corrigido e otimizado automaticamente",
-    "genre": "Processado 1.75x",
-    "copyright": f"© {datetime.now().year} FKFouri",
-    "velocidade": "1.75x",  # tag personalizada
-    "processado_com": "Python + FFmpeg",
-}
-
-SPEED_UP = [
-    "-vf",
-    "setpts=PTS/1.75",
-    "-af",
-    "atempo=1.75",
-]
-
 
 if not DESTINO.exists():
     DESTINO.mkdir(parents=True, exist_ok=True)
@@ -58,7 +33,7 @@ if not DESTINO.exists():
 
 def append_json_line(new_item):
     global TOTAL_FILES
-    with open(REPORT, "a", encoding="utf-8") as f:
+    with open(REPORT_COMPRESS, "a", encoding="utf-8") as f:
         f.write(json.dumps(new_item, ensure_ascii=False))
         f.write("\n")
         TOTAL_FILES += 1
@@ -92,7 +67,7 @@ def get_video_info(filepath: Path) -> dict:
         "-show_format",  # Informações do container (duração, tamanho, bitrate...)
         "-show_streams",  # Informações de cada stream (vídeo, áudio, legendas...)
         "-show_chapters",  # Opcional: capítulos (se houver)
-        str(filepath),
+        str(filepath.as_posix()),
     ]
 
     try:
@@ -201,7 +176,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir):
 
 
 def is_video_file(f):
-    return f.lower().endswith(((".mp4", ".mkv")))
+    return f.lower().endswith(((".mp4", ".mkv", ".mov")))
 
 
 def fix_videos(_input_dir, output_dir):
@@ -216,41 +191,44 @@ def fix_videos(_input_dir, output_dir):
 if __name__ == "__main__":
     print(f"Você está executando de: {ACTUAL_PATH}")
     print(f"O executável está em: {__THIS_PATH__}")
-    
 
-    # for file in tqdm(ORIGEM.glob("**/*.mp4")):
-    #     info = ""
-    #     if file.is_file():
-    #         _info = get_video_info(file)
-    #         _info = _info | {
-    #             "path": "/".join(file.parts[-4:]),
-    #             "size_mb": f"{file.stat().st_size/1024**2:.2f} Mb",
-    #         }
-    #         info = _info.get("format", {}).get("tags", {}).get("genre", "")
+    videos = []
+    for padrao in PADROES:
+        videos.extend(ORIGEM.glob(f"**/{padrao}"))
 
-    #         if (
-    #             "Processado" in info
-    #             or "1.75x" in info
-    #             or re.search(SPEED_IGNORE, file.name, re.IGNORECASE)
-    #             or re.search(IGNORE, file.name, re.IGNORECASE)
-    #         ):
-    #             print(f"⏭️ ⏭️  Skipping already processed file: {file} ⏭️ ⏭️ ")
-    #             continue
+    for file in tqdm(videos):
+        info = ""
+        if file.is_file():
+            _info = get_video_info(file)
+            _info = _info | {
+                "path": "/".join(file.parts[-4:]),
+                "size_mb": f"{file.stat().st_size/1024**2:.2f} Mb",
+            }
+            info = _info.get("format", {}).get("tags", {}).get("genre", "")
 
-    #         with open(__THIS_PATH__ / "__file_info.json", "a", encoding="utf-8") as f:
-    #             f.write(json.dumps(_info, ensure_ascii=False))
-    #             f.write("\n")
-    #             TOTAL_FILES += 1
+            if (
+                "Processado" in info
+                or "1.75x" in info
+                or re.search(SPEED_IGNORE, file.name, re.IGNORECASE)
+                or re.search(REGULAR_IGNORE, file.name, re.IGNORECASE)
+            ):
+                print(f"⏭️ ⏭️  Skipping already processed file: {file} ⏭️ ⏭️ ")
+                continue
 
-    #         _root_ref = len(ORIGEM.parts)
+            with open(REPORT_FFPROBE, "a", encoding="utf-8") as f:
+                f.write(json.dumps(_info, ensure_ascii=False))
+                f.write("\n")
+                TOTAL_FILES += 1
 
-    #         if len(file.parts) == _root_ref + 1:
-    #             diretorio_destino = DESTINO
-    #         else:
-    #             diretorio_destino = DESTINO / Path(*file.parts[_root_ref:-1])
+            _root_ref = len(ORIGEM.parts)
 
-    #         diretorio_destino.mkdir(parents=True, exist_ok=True)
+            if len(file.parts) == _root_ref + 1:
+                diretorio_destino = DESTINO
+            else:
+                diretorio_destino = DESTINO / Path(*file.parts[_root_ref:-1])
 
-    #         fix_video_using_ffmpeg(file, diretorio_destino)
+            diretorio_destino.mkdir(parents=True, exist_ok=True)
+
+            fix_video_using_ffmpeg(file, diretorio_destino)
 
 print(f"\n✅✅ All done! ✅✅\n Total Files: {TOTAL_FILES}\n Finished at {datetime.now().isoformat()}\n\n")
