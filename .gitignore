@@ -3,7 +3,7 @@
 *.lock
 /src/*.json
 __pycache__
-
+origem
 
 # Pyinstaller
 *.manifest
@@ -11,3 +11,4 @@ __pycache__
 *.exe
 build
 dist
+
