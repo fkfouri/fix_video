@@ -64,14 +64,14 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir):
         raise ValueError("FIX_TYPE deve ser 'error' ou 'compress'")
 
     start_time_iso = datetime.now().isoformat()
-    start = time.time()
+    start = time()
 
     exit_code = subprocess.call(cmd)
     print(f"\n🟢🟢 fixed video:{original_file}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n")
     out_f = Path(out_f)
 
     finish_time_iso = datetime.now().isoformat()
-    finised = time.time()
+    finised = time()
 
     delta = finised - start
     minutes, seconds = divmod(delta, 60)
@@ -88,6 +88,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir):
         "fix_type": FIX_TYPE,
         "speed_applied": "1.75x" if FIX_TYPE == "compress" else "none",
         "metadata_added": "yes",
+        "cmd_executed": " ".join(cmd),
     }
 
     insert_line_at_report(REPORT_COMPRESS, report)
