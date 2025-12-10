@@ -1,146 +1,19 @@
-import os
 import re
-import subprocess
-import time
 from datetime import datetime
 from pathlib import Path
 
 from tqdm import tqdm
 
-from setup import (
-    __THIS_PATH__,
-    ACTUAL_PATH,
-    CUSTOM_METADATA,
-    DESTINO,
-    FIX_FLAG,
-    FIX_TYPE,
-    ORIGEM,
-    PADROES,
-    REGULAR_IGNORE,
-    REMOVE,
-    REPORT_COMPRESS,
-    REPORT_FFPROBE,
-    SPEED_IGNORE,
-    SPEED_UP,
-)
-from support import get_video_info, insert_line_at_report
+from setup import __THIS_PATH__, ACTUAL_PATH, DESTINO, ORIGEM, PADROES, REGULAR_IGNORE, REPORT_FFPROBE, SPEED_IGNORE
+from support import fix_video_using_ffmpeg, get_video_info, insert_line_at_report
 
 TOTAL_FILES = 0
 
-if not DESTINO.exists():
-    DESTINO.mkdir(parents=True, exist_ok=True)
-
-
-def build_metadata_args() -> list:
-    """Converte o dicionário CUSTOM_METADATA em argumentos do FFmpeg"""
-    args = []
-    for key, value in CUSTOM_METADATA.items():
-        args.extend(["-metadata", f"{key}={value}"])
-    return args
-
-
-def fix_video_using_ffmpeg(original_file: Path, output_dir):
-    clean_name = original_file.stem.replace(".fix", "")
-    new_name = f"{clean_name}{FIX_FLAG}{original_file.suffix}"
-    out_f = output_dir / new_name
-
-    base_cmd = ["ffmpeg", "-y"]  # -y = sobrescreve sem perguntar
-
-    if FIX_TYPE == "error":
-        # Apenas correção de erros → stream copy (sem reencodar)
-        cmd = (
-            base_cmd
-            + [
-                "-err_detect",
-                "ignore_err",
-                "-i",
-                str(original_file),
-                "-c",
-                "copy",  # sem reencodar
-            ]
-            + build_metadata_args()
-            + [str(out_f)]
-        )
-
-    elif FIX_TYPE == "compress":
-        # Reencoda com compressão + aceleração + metadados
-        cmd = (
-            base_cmd
-            + [
-                "-i",
-                str(original_file),
-                "-r",
-                "24",  # força 24 fps
-                "-b:v",
-                "400k",
-                "-b:a",
-                "128k",
-                "-ar",
-                "44100",
-            ]
-            + SPEED_UP
-            + build_metadata_args()
-            + [str(out_f)]
-        )
-    elif FIX_TYPE == "convert":
-        ...
-        # Converte MOV (ou qualquer) → .mpeg (H.264/AAC)
-        # cmd += ["-i", str(infile)]
-        # cmd += ["-c:v", "libx264", "-crf", "23", "-preset", "medium"]
-        # cmd += ["-c:a", "aac", "-b:a", "128k", "-vf", "format=yuv420p"]
-        # cmd += get_metadata() + [str(outfile)]
-
-    else:
-        raise ValueError("FIX_TYPE deve ser 'error' ou 'compress'")
-
-    start_time_iso = datetime.now().isoformat()
-    start = time.time()
-
-    exit_code = subprocess.call(cmd)
-    print(f"\n🟢🟢 fixed video:{original_file}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n")
-    out_f = Path(out_f)
-
-    finish_time_iso = datetime.now().isoformat()
-    finised = time.time()
-
-    delta = finised - start
-    minutes, seconds = divmod(delta, 60)
-    processing_time = f"{int(minutes):02d}:{int(seconds):02d}"
-
-    report = {
-        "original": "/".join(original_file.parts[-4:]),
-        "original_size_mb": f"{original_file.stat().st_size / 1024**2:.2f}",
-        "final": "/".join(out_f.parts[-4:]),
-        "final_size_mb": f"{out_f.stat().st_size / 1024**2:.2f}",
-        "start_time": start_time_iso,
-        "finish_time": finish_time_iso,
-        "processing_time": f"{processing_time} (MM:SS)",
-        "fix_type": FIX_TYPE,
-        "speed_applied": "1.75x" if FIX_TYPE == "compress" else "none",
-        "metadata_added": "yes",
-    }
-
-    global TOTAL_FILES
-    TOTAL_FILES += 1
-    insert_line_at_report(REPORT_COMPRESS, report)
-    if REMOVE:
-        original_file.unlink()
-
-
-def is_video_file(f):
-    return f.lower().endswith(((".mp4", ".mkv", ".mov")))
-
-
-def fix_videos(_input_dir, output_dir):
-    for f in os.listdir(_input_dir):
-        if os.path.isdir(f):
-            fix_videos(os.path.join(_input_dir, f), output_dir)
-        if not is_video_file(f):
-            continue
-        fix_video_using_ffmpeg(os.path.join(_input_dir, f), output_dir)
-
 
 if __name__ == "__main__":
+    if not DESTINO.exists():
+        DESTINO.mkdir(parents=True, exist_ok=True)
+
     print(f"Você está executando de: {ACTUAL_PATH}")
     print(f"O executável está em: {__THIS_PATH__}")
 
