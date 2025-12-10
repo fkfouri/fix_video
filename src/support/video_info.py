@@ -3,7 +3,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from setup import REGULAR_IGNORE, SPEED_IGNORE
+from ..setup import REGULAR_IGNORE, SPEED_IGNORE
 
 
 def get_video_info(filepath: Path) -> dict:
@@ -74,7 +74,7 @@ def video_should_be_processed(
 
     if (
         "Processado" in tag_check
-        or "1.75x" in tag_check
+        or "Processed" in tag_check
         or re.search(speed_ignore, filename, re.IGNORECASE)
         or re.search(regular_ignore, filename, re.IGNORECASE)
     ):

@@ -64,5 +64,5 @@ syncro_git = "src.fix:syncro_git"
 pre_lint = { cmd = "echo 'Black' && black .", help = "apply the black linter"}
 lint = { cmd = "ruff check . --fix", help = "apply ruff linter"}
 tree = "uv tree > .pip.tree"
-gen_fix_video = "uv run pyinstaller --onefile --clean --name fix_video src/fix_video.py --name fix_video.exe --target-arch x86_64"
+gen_fix_video = "uv run pyinstaller --onefile --clean --name fix_video src/main.py --name fix_video.exe --target-arch x86_64"
 

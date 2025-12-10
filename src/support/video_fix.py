@@ -3,20 +3,19 @@ from datetime import datetime
 from pathlib import Path
 from time import time
 
-from setup import FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
-
+from ..setup import FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
 from .library import build_metadata_args
 from .report import insert_line_at_report
 
 
-def fix_video_using_ffmpeg(original_file: Path, output_dir):
+def fix_video_using_ffmpeg(original_file: Path, output_dir, mode):
     clean_name = original_file.stem.replace(".fix", "")
     new_name = f"{clean_name}{FIX_FLAG}{original_file.suffix}"
     out_f = output_dir / new_name
 
     base_cmd = ["ffmpeg", "-y"]  # -y = sobrescreve sem perguntar
 
-    if FIX_TYPE == "error":
+    if mode == "fix":
         # Apenas correção de erros → stream copy (sem reencodar)
         cmd = (
             base_cmd
@@ -28,12 +27,16 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir):
                 "-c",
                 "copy",  # sem reencodar
             ]
-            + build_metadata_args()
+            + build_metadata_args("fixed")
             + [str(out_f)]
         )
 
-    elif FIX_TYPE == "compress":
+    elif mode in ["compress",   "up"]:
         # Reencoda com compressão + aceleração + metadados
+        speed_up = SPEED_UP if mode == "up" else []
+        what = "1.75x" if mode == "up" else "compress"
+        args = build_metadata_args(what=what)
+
         cmd = (
             base_cmd
             + [
@@ -48,8 +51,8 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir):
                 "-ar",
                 "44100",
             ]
-            + SPEED_UP
-            + build_metadata_args()
+            + speed_up
+            + args
             + [str(out_f)]
         )
     elif FIX_TYPE == "convert":

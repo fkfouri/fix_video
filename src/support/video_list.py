@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from setup import PADROES
+from ..setup import PADROES
 
 
 def list_videos_in_directory(directory: Path) -> list:

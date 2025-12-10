@@ -1,13 +1,17 @@
 from click import Path
 
-from setup import CUSTOM_METADATA
+from ..setup import CUSTOM_METADATA
 
 
-def build_metadata_args() -> list:
+def build_metadata_args(what= "") -> list:
     """Converte o dicionário CUSTOM_METADATA em argumentos do FFmpeg"""
     args = []
+    genre = "Processed"
     for key, value in CUSTOM_METADATA.items():
-        args.extend(["-metadata", f"{key}={value}"])
+        if key not in ["genre"]:  # genre será adicionado separadamente
+            args.extend(["-metadata", f"{key}={value}"])
+
+    args.extend(["-metadata", f"genre={genre} {what}".strip()])
     return args
 
 

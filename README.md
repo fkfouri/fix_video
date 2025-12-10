@@ -6,6 +6,11 @@ Baseado no codigo https://gist.github.com/masgari/2ba5f8fb19a735ffbf066022090ae1
 
 RODAR EM WINDOWS para gerar .EXE
 
+## Rodar como pacote
+``` bash
+python -m src.main
+python -m src.main --help
+```
 
 ## Setup
 ```
@@ -49,4 +54,30 @@ ffmpeg -i input.mp4 -r 24 -ar 44100 -c:v libx264 -preset slow -crf 18 -c:a aac -
 # -preset slow → Mantém boa qualidade de compressão.
 # -crf 18 → Controla a qualidade do vídeo (menor = melhor).
 -c:a aac -b:a 192k → Usa AAC para áudio e define o bitrate para 192 kbps.
+
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.mp4 -r 24 -b:v 400k -b:a 128k -ar 44100  C:/dev/fix_video/origem/IMG_1933.fix.up.mp4
+
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf  23 -preset medium -c:a aac -b:a 128k -vf format=yuv420p C:/dev/fix_video/origem/IMG_1933.fix.up.mp4
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -qscale 0 C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV  -q:v 0 -q:a 0 C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
+
+# Tipo copio... sei la
+# Lossless Conversion (if codecs are compatible):
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v copy -c:a copy C:/dev/fix_video/origem/IMG_1933.mp4  
+
+# High-Quality Re-encoding:
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf 18 -c:a aac -b:a 128K C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
+
+
+-r 24 -b:v 400k -b:a 128k -ar 44100  C:/dev/fix_video/origem/IMG_1933.fix.up.mp4
+
+        # Converte MOV (ou qualquer) → .mpeg (H.264/AAC)
+        # cmd += ["-i", str(infile)]
+        # cmd += ["-c:v", "libx264", "-crf", "23", "-preset", "medium"]
+        # cmd += ["-c:a", "aac", "-b:a", "128k", "-vf", "format=yuv420p"]
+        # cmd += get_metadata() + [str(outfile)]
 ```

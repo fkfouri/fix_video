@@ -36,7 +36,7 @@ CUSTOM_METADATA = {
     "date": datetime.now().strftime("%Y-%m-%d"),
     "comment": "Acelerado 1.75× com FFmpeg (setpts + atempo)",
     "description": "Vídeo corrigido e otimizado automaticamente",
-    "genre": "Processado 1.75x",
+    "genre": "Processed 1.75x",
     "copyright": f"© {datetime.now().year} FKFouri",
     "velocidade": "1.75x",  # tag personalizada
     "processado_com": "Python + FFmpeg",
