@@ -1,6 +1,9 @@
 import json
+import re
 import subprocess
 from pathlib import Path
+
+from setup import REGULAR_IGNORE, SPEED_IGNORE
 
 
 def get_video_info(filepath: Path) -> dict:
@@ -37,11 +40,11 @@ def get_video_info(filepath: Path) -> dict:
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         info = json.loads(result.stdout)
-        info = info | {"filepath": filepath.as_posix()}
         info = info | {
             "path": "/".join(filepath.parts[-4:]),
             "size_mb": f"{filepath.stat().st_size/1024**2:.2f} Mb",
         }
+        return info
 
     except FileNotFoundError:
         raise RuntimeError("ffprobe não encontrado. Instale o FFmpeg no sistema.")
@@ -49,3 +52,32 @@ def get_video_info(filepath: Path) -> dict:
         raise RuntimeError(f"Erro ao executar ffprobe: {e.stderr}")
     except json.JSONDecodeError:
         raise RuntimeError("ffprobe retornou uma saída inválida (não é JSON).")
+
+
+def video_should_be_processed(
+    info: dict, filename: str, speed_ignore=SPEED_IGNORE, regular_ignore=REGULAR_IGNORE
+) -> bool:
+    """
+    Verifica se o vídeo deve ser processado com base nas tags e padrões de nome de arquivo.
+
+    Args:
+        info (dict): Informações do vídeo obtidas do ffprobe
+        filename (str): Nome do arquivo de vídeo
+        speed_ignore (str): Padrão regex para ignorar vídeos já acelerados
+        regular_ignore (str): Padrão regex para ignorar vídeos já processados
+
+    Returns:
+        bool: True se o vídeo deve ser processado, False caso contrário
+    """
+
+    tag_check = info.get("format", {}).get("tags", {}).get("genre", "")
+
+    if (
+        "Processado" in tag_check
+        or "1.75x" in tag_check
+        or re.search(speed_ignore, filename, re.IGNORECASE)
+        or re.search(regular_ignore, filename, re.IGNORECASE)
+    ):
+        return False
+
+    return True

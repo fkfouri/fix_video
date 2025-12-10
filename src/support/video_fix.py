@@ -90,8 +90,8 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir):
         "metadata_added": "yes",
     }
 
-    global TOTAL_FILES
-    TOTAL_FILES += 1
     insert_line_at_report(REPORT_COMPRESS, report)
+
     if REMOVE:
-        original_file.unlink()
+        pass
+        # original_file.unlink()

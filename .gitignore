@@ -12,3 +12,5 @@ origem
 build
 dist
 
+__ffprobe_report.json
+__compress_report_ffmpeg.json
