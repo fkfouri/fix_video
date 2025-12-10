@@ -36,7 +36,12 @@ def get_video_info(filepath: Path) -> dict:
 
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
-        return json.loads(result.stdout)
+        info = json.loads(result.stdout)
+        info = info | {"filepath": filepath.as_posix()}
+        info = info | {
+            "path": "/".join(filepath.parts[-4:]),
+            "size_mb": f"{filepath.stat().st_size/1024**2:.2f} Mb",
+        }
 
     except FileNotFoundError:
         raise RuntimeError("ffprobe não encontrado. Instale o FFmpeg no sistema.")
