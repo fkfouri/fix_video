@@ -10,6 +10,7 @@ __THIS_PATH__ = (
 ACTUAL_PATH = Path.cwd()
 REPORT_COMPRESS = ACTUAL_PATH / "__compress_report_ffmpeg.json"
 REPORT_FFPROBE = ACTUAL_PATH / "__ffprobe_report.json"
+REPORT_ERROR = ACTUAL_PATH / "__error_report.json"
 
 
 # ACTUAL_PATH = Path("C:/dev/fix_video/origem")

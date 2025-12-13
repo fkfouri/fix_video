@@ -1,6 +1,7 @@
 import pytest
 from click.testing import CliRunner
-from src.main import main
+
+from src.fix_video.main import main
 
 
 def test_main_help_option():
@@ -21,7 +22,7 @@ def test_main_no_source_option():
     [
         ["--mode", "Y", "./origem"],
         ["--mode", "Y", "C:/dev/fix_video/origem"],
-        ["--mode", "fIx1", "C:/dev/fix_video/origem"],
+        ["--mode", "fIx", "C:/dev/fix_video/origem"],
         ["--mode", "compress", "C:/dev/fix_video/origem"],
     ],
 )
