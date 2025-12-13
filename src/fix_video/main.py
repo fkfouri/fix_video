@@ -5,7 +5,7 @@ import click
 from tqdm import tqdm
 
 from . import __version__
-from .setup import ACTUAL_PATH, REPORT_ERROR, REPORT_FFPROBE, REMOVE
+from .setup import ACTUAL_PATH, REPORT_ERROR, REPORT_FFPROBE
 from .support import library, report, video_fix, video_info, video_list
 
 TOTAL_FILES = 0
@@ -26,19 +26,19 @@ TOTAL_FILES = 0
     type=click.Choice(["up", "fix", "compress"], case_sensitive=False),
     required=False,
     default="up",
-    help="Escolha o modo: up, fix ou compress. Default é up.",
+    help="Choose the mode: up, fix or compress. Default is up.",
 )
 @click.option(
     "-nr",
     "--no-remove",
     is_flag=True,
-    help="Escolha o modo: up, fix ou compress. Default é up.",
+    help="No allow removal of original files after processing.",
 )
 def main(source, mode, no_remove):
     """
-    Caminho a ser processado.
+    Fix and optimize video files using FFmpeg.
 
-    SOURCE é o arquivo ou diretório de entrada.
+    SOURCE is the path to the file or directory to be processed.
     """
     global TOTAL_FILES
     print(f"\n🚀🚀 Fix Video v{__version__} 🚀🚀")
