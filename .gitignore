@@ -11,6 +11,8 @@ origem
 *.exe
 build
 dist
+src
+*.egg-info
 
 __ffprobe_report.json
 __compress_report_ffmpeg.json

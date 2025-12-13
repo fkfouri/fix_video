@@ -47,16 +47,12 @@ ffmpeg -i input.mp4 -r 24 -ar 44100 output.mp4
 ```
 
 🚀 Se quiser manter a melhor qualidade possível:
+Caso da filmagem seep
 ```bash
 ffmpeg -i input.mp4 -r 24 -ar 44100 -c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k output.mp4
 
-# -c:v libx264 → Usa o codec H.264 para compressão eficiente.
-# -preset slow → Mantém boa qualidade de compressão.
-# -crf 18 → Controla a qualidade do vídeo (menor = melhor).
--c:a aac -b:a 192k → Usa AAC para áudio e define o bitrate para 192 kbps.
 
-
-ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.mp4 -r 24 -b:v 400k -b:a 128k -ar 44100  C:/dev/fix_video/origem/IMG_1933.fix.up.mp4
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.mp4 -r 24 -b:v 400k -b:a 128k -ar 44100  C:/dev/fix_video/origem//_A_IMG_1933.fix.up.mp4
 
 
 ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf  23 -preset medium -c:a aac -b:a 128k -vf format=yuv420p C:/dev/fix_video/origem/IMG_1933.fix.up.mp4
@@ -73,11 +69,4 @@ ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v copy -c:a copy C:/dev/
 ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf 18 -c:a aac -b:a 128K C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
 
 
--r 24 -b:v 400k -b:a 128k -ar 44100  C:/dev/fix_video/origem/IMG_1933.fix.up.mp4
-
-        # Converte MOV (ou qualquer) → .mpeg (H.264/AAC)
-        # cmd += ["-i", str(infile)]
-        # cmd += ["-c:v", "libx264", "-crf", "23", "-preset", "medium"]
-        # cmd += ["-c:a", "aac", "-b:a", "128k", "-vf", "format=yuv420p"]
-        # cmd += get_metadata() + [str(outfile)]
 ```
