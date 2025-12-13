@@ -31,7 +31,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode):
             + [str(out_f)]
         )
 
-    elif mode in ["compress",   "up"]:
+    elif mode in ["compress", "up"]:
         # Reencoda com compressão + aceleração + metadados
         speed_up = SPEED_UP if mode == "up" else []
         what = "1.75x" if mode == "up" else "compress"

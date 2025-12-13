@@ -3,7 +3,7 @@ from click import Path
 from ..setup import CUSTOM_METADATA
 
 
-def build_metadata_args(what= "") -> list:
+def build_metadata_args(what="") -> list:
     """Converte o dicionário CUSTOM_METADATA em argumentos do FFmpeg"""
     args = []
     genre = "Processed"

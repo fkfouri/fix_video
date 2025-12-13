@@ -12,7 +12,7 @@ REPORT_COMPRESS = ACTUAL_PATH / "__compress_report_ffmpeg.json"
 REPORT_FFPROBE = ACTUAL_PATH / "__ffprobe_report.json"
 
 
-ACTUAL_PATH = Path("C:/dev/fix_video/origem")
+# ACTUAL_PATH = Path("C:/dev/fix_video/origem")
 ORIGEM = ACTUAL_PATH
 DESTINO = ACTUAL_PATH
 

@@ -4,6 +4,7 @@ from pathlib import Path
 import click
 from tqdm import tqdm
 
+from . import __version__
 from .setup import __THIS_PATH__, ACTUAL_PATH, REPORT_FFPROBE
 from .support import library, report, video_fix, video_info, video_list
 
@@ -11,6 +12,10 @@ TOTAL_FILES = 0
 
 
 @click.command()
+@click.version_option(
+    version=__version__,
+    prog_name="fix-video"
+)
 @click.argument(
     "source",
     metavar="SOURCE",
@@ -33,9 +38,7 @@ def main(source, mode):
     SOURCE é o arquivo ou diretório de entrada.
     """
     global TOTAL_FILES
-
-    print(f"Você está executando de: {ACTUAL_PATH}")
-    print(f"O executável está em: {__THIS_PATH__}")
+    print(f"\n🚀🚀 Fix Video v{__version__} 🚀🚀")
 
     if source == ".":
         ORIGEM = ACTUAL_PATH
@@ -43,6 +46,8 @@ def main(source, mode):
     else:
         ORIGEM = Path(source)
         DESTINO = Path(source)
+
+    print(f"Started at {datetime.now().isoformat()}\nRunning in mode: {mode} at path: {ORIGEM}\n")
 
     video_files = video_list.list_videos_in_directory(ORIGEM)
 
@@ -61,8 +66,5 @@ def main(source, mode):
             video_fix.fix_video_using_ffmpeg(file, diretorio_destino, mode=mode)
             TOTAL_FILES += 1
 
-
-if __name__ == "__main__":
-    main()
-
-    print(f"\n✅✅ All done! ✅✅\n Total Files: {TOTAL_FILES}\n Finished at {datetime.now().isoformat()}\n\n")
+    print(f"\n✅✅ All done! ✅✅\nTotal Files: {TOTAL_FILES}\nFinished at {datetime.now().isoformat()}")
+    print(f"Run from path: {ACTUAL_PATH}\n\n") 
