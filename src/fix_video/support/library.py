@@ -1,4 +1,4 @@
-from click import Path
+from pathlib import Path
 
 from ..setup import CUSTOM_METADATA
 

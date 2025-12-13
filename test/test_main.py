@@ -24,6 +24,7 @@ def test_main_no_source_option():
         ["--mode", "fIx", "-nr", "C:/dev/fix_video/origem"],
         ["--mode", "fIx", "C:/dev/fix_video/origem"],
         ["--mode", "compress", "C:/dev/fix_video/origem"],
+        ["--mode", "compress", "C:/Users/fkfouri/Downloads/2017 - Aulas ITA/"],
     ],
 )
 def test_main_source_and_option(args):
