@@ -5,10 +5,14 @@
 __pycache__
 origem
 
-# Pyinstaller
+Pyinstaller
 *.manifest
 *.spec
 *.exe
 build
 dist
+*.egg-info
 
+__ffprobe_report.*
+__compress_report_ffmpeg.*
+__error_report.*

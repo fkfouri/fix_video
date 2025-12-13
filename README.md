@@ -6,6 +6,11 @@ Baseado no codigo https://gist.github.com/masgari/2ba5f8fb19a735ffbf066022090ae1
 
 RODAR EM WINDOWS para gerar .EXE
 
+## Rodar como pacote
+``` bash
+python -m src.main
+python -m src.main --help
+```
 
 ## Setup
 ```
@@ -42,11 +47,26 @@ ffmpeg -i input.mp4 -r 24 -ar 44100 output.mp4
 ```
 
 🚀 Se quiser manter a melhor qualidade possível:
+Caso da filmagem seep
 ```bash
 ffmpeg -i input.mp4 -r 24 -ar 44100 -c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k output.mp4
 
-# -c:v libx264 → Usa o codec H.264 para compressão eficiente.
-# -preset slow → Mantém boa qualidade de compressão.
-# -crf 18 → Controla a qualidade do vídeo (menor = melhor).
--c:a aac -b:a 192k → Usa AAC para áudio e define o bitrate para 192 kbps.
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.mp4 -r 24 -b:v 400k -b:a 128k -ar 44100  C:/dev/fix_video/origem//_A_IMG_1933.fix.up.mp4
+
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf  23 -preset medium -c:a aac -b:a 128k -vf format=yuv420p C:/dev/fix_video/origem/IMG_1933.fix.up.mp4
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -qscale 0 C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
+
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV  -q:v 0 -q:a 0 C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
+
+# Tipo copio... sei la
+# Lossless Conversion (if codecs are compatible):
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v copy -c:a copy C:/dev/fix_video/origem/IMG_1933.mp4  
+
+# High-Quality Re-encoding:
+ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf 18 -c:a aac -b:a 128K C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
+
+
 ```
