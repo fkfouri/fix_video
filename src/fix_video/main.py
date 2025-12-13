@@ -5,7 +5,7 @@ import click
 from tqdm import tqdm
 
 from . import __version__
-from .setup import ACTUAL_PATH, REPORT_ERROR, REPORT_FFPROBE
+from .setup import ACTUAL_PATH, REPORT_ERROR, REPORT_FFPROBE, REMOVE
 from .support import library, report, video_fix, video_info, video_list
 
 TOTAL_FILES = 0
@@ -28,7 +28,13 @@ TOTAL_FILES = 0
     default="up",
     help="Escolha o modo: up, fix ou compress. Default é up.",
 )
-def main(source, mode):
+@click.option(
+    "-nr",
+    "--no-remove",
+    is_flag=True,
+    help="Escolha o modo: up, fix ou compress. Default é up.",
+)
+def main(source, mode, no_remove):
     """
     Caminho a ser processado.
 
@@ -43,6 +49,10 @@ def main(source, mode):
     else:
         ORIGEM = Path(source)
         DESTINO = Path(source)
+
+    if no_remove:
+        global REMOVE
+        REMOVE = False
 
     print(f"Started at {datetime.now().isoformat()}\nRunning in mode: {mode} at path: {ORIGEM}\n")
 

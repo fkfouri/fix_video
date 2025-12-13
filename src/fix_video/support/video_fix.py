@@ -97,5 +97,4 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode):
     insert_line_at_report(REPORT_COMPRESS, report)
 
     if REMOVE:
-        pass
-        # original_file.unlink()
+        original_file.unlink()
