@@ -34,12 +34,14 @@ def get_video_info(filepath: Path) -> dict:
         "-show_format",  # Informações do container (duração, tamanho, bitrate...)
         "-show_streams",  # Informações de cada stream (vídeo, áudio, legendas...)
         "-show_chapters",  # Opcional: capítulos (se houver)
+        "-i",
         str(filepath.as_posix()),
     ]
 
     try:
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        info = json.loads(result.stdout)
+        result = subprocess.run(command, capture_output=True, check=True)
+        stdout = result.stdout.decode("utf-8")
+        info = json.loads(stdout)
         info = info | {
             "path": "/".join(filepath.parts[-4:]),
             "size_mb": f"{filepath.stat().st_size/1024**2:.2f} Mb",
@@ -52,6 +54,8 @@ def get_video_info(filepath: Path) -> dict:
         raise RuntimeError(f"Erro ao executar ffprobe: {e.stderr}")
     except json.JSONDecodeError:
         raise RuntimeError("ffprobe retornou uma saída inválida (não é JSON).")
+    except Exception as e:
+        raise RuntimeError(f"Erro inesperado ao obter informações do vídeo: {str(e)}")
 
 
 def video_should_be_processed(
