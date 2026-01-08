@@ -8,7 +8,7 @@ def test_main_help_option():
     runner = CliRunner()
     result = runner.invoke(main, ["--help"])
     assert result.exit_code == 0
-    assert "SOURCE é o arquivo ou diretório de entrada" in result.output
+    assert "SOURCE is the path to the file or directory to be processed" in result.output
 
 
 def test_main_no_source_option():
@@ -23,7 +23,7 @@ def test_main_no_source_option():
         ["--mode", "Y", "./origem"],
         ["--mode", "fIx", "-nr", "C:/dev/fix_video/origem"],
         ["--mode", "fIx", "C:/dev/fix_video/origem"],
-        ["--mode", "compress", "C:/dev/fix_video/origem"],
+        ["--mode", "compress", "-nr", "C:/dev/fix_video/origem"],
         ["--mode", "compress", "C:/Users/fkfouri/Downloads/2017 - Aulas ITA/"],
     ],
 )

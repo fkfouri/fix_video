@@ -8,7 +8,7 @@ from .library import build_metadata_args
 from .report import insert_line_at_report
 
 
-def fix_video_using_ffmpeg(original_file: Path, output_dir, mode):
+def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, remove_original = REMOVE):
     clean_name = original_file.stem.replace(".fix", "")
     new_name = f"{clean_name}{FIX_FLAG}{original_file.suffix}"
     out_f = output_dir / new_name
@@ -96,5 +96,5 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode):
 
     insert_line_at_report(REPORT_COMPRESS, report)
 
-    if REMOVE:
+    if remove_original:
         original_file.unlink()

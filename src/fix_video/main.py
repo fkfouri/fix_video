@@ -50,9 +50,7 @@ def main(source, mode, no_remove):
         ORIGEM = Path(source)
         DESTINO = Path(source)
 
-    if no_remove:
-        global REMOVE
-        REMOVE = False
+    remove_original = not no_remove
 
     print(f"Started at {datetime.now().isoformat()}\nRunning in mode: {mode} at path: {ORIGEM}\n")
 
@@ -71,7 +69,7 @@ def main(source, mode, no_remove):
                 report.insert_line_at_report(REPORT_FFPROBE, info)
                 diretorio_destino = library.define_destination_directory(file, ORIGEM, DESTINO)
 
-                video_fix.fix_video_using_ffmpeg(file, diretorio_destino, mode=mode)
+                video_fix.fix_video_using_ffmpeg(file, diretorio_destino, mode=mode, remove_original=remove_original)
                 TOTAL_FILES += 1
             except Exception as e:
                 print(f"❌❌ Error processing file {file}: {e} ❌❌")
