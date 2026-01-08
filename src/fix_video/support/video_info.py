@@ -79,6 +79,7 @@ def video_should_be_processed(
     if (
         "Processado" in tag_check
         or "Processed" in tag_check
+        or "Compressed" in tag_check
         or re.search(speed_ignore, filename, re.IGNORECASE)
         or re.search(regular_ignore, filename, re.IGNORECASE)
     ):

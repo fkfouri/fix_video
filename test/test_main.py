@@ -24,7 +24,10 @@ def test_main_no_source_option():
         ["--mode", "fIx", "-nr", "C:/dev/fix_video/origem"],
         ["--mode", "fIx", "C:/dev/fix_video/origem"],
         ["--mode", "compress", "-nr", "C:/dev/fix_video/origem"],
-        ["--mode", "compress", "C:/Users/fkfouri/Downloads/2017 - Aulas ITA/"],
+        ["--mode", "compress", "-nr", "-br", "0.5", "C:/dev/fix_video/origem"],
+        ["--mode", "compress", "-nr", "-br", "0.25", "C:/dev/fix_video/origem"],
+        ["--mode", "up", "-nr", "-r", "2", "C:/dev/fix_video/origem"],
+        ["--mode", "up", "-nr", "-r", "2", "-br", "0.5", "C:/dev/fix_video/origem"],
     ],
 )
 def test_main_source_and_option(args):

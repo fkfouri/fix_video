@@ -26,26 +26,45 @@ DESTINO = ACTUAL_PATH
 
 REMOVE = True
 FIX_TYPE = "compress"
-FIX_FLAG = ".fix.up"
 REGULAR_IGNORE = r".fix\.mp4$"
 SPEED_IGNORE = r".fix\.up\.mp4$"
 PADROES = ["*.mp4", "*.mov", "*.avi", "*.mkv", "*.webm", "*.m4v"]
+BIT_RATE = 400  # kbps para compressão
 
 # METADADOS que serão adicionados em TODOS os vídeos processados
+# "Acelerado 1.75× com FFmpeg (setpts + atempo)",
 CUSTOM_METADATA = {
     "year": datetime.now().year,
     "date": datetime.now().strftime("%Y-%m-%d"),
-    "comment": "Acelerado 1.75× com FFmpeg (setpts + atempo)",
-    "description": "Vídeo corrigido e otimizado automaticamente",
-    "genre": "Processed 1.75x",
-    "copyright": f"© {datetime.now().year} FKFouri",
+    "comment": "Fixed and optimized automatically",
+    "description": "Fixed and optimized automatically",
+    "genre": "Processed",
+    "copyright": f"© {datetime.now().year} FKfouri",
     "velocidade": "1.75x",  # tag personalizada
     "processado_com": "Python + FFmpeg",
 }
 
-SPEED_UP = [
-    "-vf",
-    "setpts=PTS/1.75",
-    "-af",
-    "atempo=1.75",
-]
+
+def FIX_FLAG(mode=None) -> str:
+    if mode == "up":
+        return ".fix.up"
+    elif mode == "compress":
+        return ".fix.comp"
+    return ".fix"
+
+
+def SPEED_UP(value=1.75) -> list:
+    return [
+        "-vf",
+        f"setpts=PTS/{value}",
+        "-af",
+        f"atempo={value}",
+    ]
+
+
+# SPEED_UP = [
+#     "-vf",
+#     "setpts=PTS/1.75",
+#     "-af",
+#     "atempo=1.75",
+# ]

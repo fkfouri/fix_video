@@ -3,15 +3,22 @@ from datetime import datetime
 from pathlib import Path
 from time import time
 
-from ..setup import FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
+from ..setup import BIT_RATE, FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
 from .library import build_metadata_args
 from .report import insert_line_at_report
 
 
-def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, remove_original = REMOVE):
+def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     clean_name = original_file.stem.replace(".fix", "")
-    new_name = f"{clean_name}{FIX_FLAG}{original_file.suffix}"
+
+    new_name = f"{clean_name}{FIX_FLAG(mode)}{original_file.suffix}"
     out_f = output_dir / new_name
+
+    remove_original = kwargs.get("remove_original", REMOVE)
+    speed_factor = kwargs.get("speed_factor", None)
+    bit_rate = kwargs.get("bit_rate", BIT_RATE)
+    info = kwargs.get("info", {})
+    original_bit_rate = int(info.get("format", {}).get("bit_rate", 1)) // 1000
 
     base_cmd = ["ffmpeg", "-y"]  # -y = sobrescreve sem perguntar
 
@@ -33,8 +40,14 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, remove_origina
 
     elif mode in ["compress", "up"]:
         # Reencoda com compressão + aceleração + metadados
-        speed_up = SPEED_UP if mode == "up" else []
-        what = "1.75x" if mode == "up" else "compress"
+        speed_up = SPEED_UP(speed_factor) if mode == "up" else []
+        new_bit_rate = get_video_bit_rate(bit_rate, original_bit_rate)
+
+        if mode == "up":
+            what = f"Processed - Acelerado {speed_factor}× com FFmpeg (setpts + atempo)"
+        else:
+            what = f"Processed - Compress from {original_bit_rate}k to {new_bit_rate}k"
+
         args = build_metadata_args(what=what)
 
         cmd = (
@@ -45,7 +58,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, remove_origina
                 "-r",
                 "24",  # força 24 fps
                 "-b:v",
-                "400k",
+                new_bit_rate,
                 "-b:a",
                 "128k",
                 "-ar",
@@ -98,3 +111,20 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, remove_origina
 
     if remove_original:
         original_file.unlink()
+
+
+def get_video_bit_rate(bit_rate, original_bit_rate) -> str:
+    """Retorna a taxa de bits do vídeo em kbps como string formatada para FFmpeg (ex: '400k')"""
+    # bit_rate = info.get("format", {}).get("bit_rate", None)
+    # if bit_rate is None:
+    #     raise ValueError("Taxa de bits não encontrada nas informações do vídeo.")
+
+    # kbps = int(bit_rate) // 1000
+    # return f"{kbps}k"
+
+    if bit_rate > 1:
+        new_bit_rate = f"{int(bit_rate)}k"
+    else:
+        value = original_bit_rate * bit_rate // 1
+        new_bit_rate = f"{int(value)}k"
+    return new_bit_rate
