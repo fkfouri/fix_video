@@ -4,8 +4,8 @@ from pathlib import Path
 import click
 from tqdm import tqdm
 
-from ..library import library
 from . import __version__
+from .library import library
 from .setup import ACTUAL_PATH
 from .support import fix_image, image_list
 

@@ -4,8 +4,8 @@ from pathlib import Path
 import click
 from tqdm import tqdm
 
-from ..library import library, report
 from . import __version__
+from .library import library, report
 from .setup import ACTUAL_PATH, REPORT_ERROR, REPORT_FFPROBE
 from .support import video_fix, video_info, video_list
 
