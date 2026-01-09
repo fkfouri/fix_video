@@ -3,12 +3,15 @@ from pathlib import Path
 from ..setup import PADROES
 
 
-def list_videos_in_directory(directory: Path) -> list:
+def list_videos_in_directory(source: Path) -> list:
     """Lista todos os arquivos de vídeo em um diretório com base em padrões fornecidos."""
+
+    if source.is_file():
+        return [source]
 
     video_files = []
     for padrao in PADROES:
-        video_files.extend(directory.glob(f"**/{padrao}"))
+        video_files.extend(source.glob(f"**/{padrao}"))
 
     return video_files
 

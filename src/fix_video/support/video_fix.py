@@ -9,6 +9,9 @@ from .report import insert_line_at_report
 
 
 def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
+    """
+    TODO: fazer a quantidade de quadros por segundo
+    """
     clean_name = original_file.stem.replace(".fix", "")
 
     new_name = f"{clean_name}{FIX_FLAG(mode)}{original_file.suffix}"
@@ -55,8 +58,8 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
             + [
                 "-i",
                 str(original_file),
-                "-r",
-                "24",  # força 24 fps
+                # "-r",
+                # "24",  # força 24 fps
                 "-b:v",
                 new_bit_rate,
                 "-b:a",

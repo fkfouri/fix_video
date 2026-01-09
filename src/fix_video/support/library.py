@@ -18,10 +18,17 @@ def define_destination_directory(original_file: Path, origem: Path, destino: Pat
     """Define o diretório de destino mantendo a estrutura de pastas relativa."""
     _root_reference_size_ = len(origem.parts)
 
-    if len(original_file.parts) == _root_reference_size_ + 1:
-        diretorio_destino = destino
+    if destino.is_file():
+        destino_base = destino.parent
     else:
-        diretorio_destino = destino / Path(*original_file.parts[_root_reference_size_:-1])
+        destino_base = destino
+
+    #     raise ValueError("Destino não pode ser um arquivo quando se define diretório de destino para vídeos.")
+
+    if len(original_file.parts) == _root_reference_size_ + 1:
+        diretorio_destino = destino_base
+    else:
+        diretorio_destino = destino_base / Path(*original_file.parts[_root_reference_size_:-1])
 
     diretorio_destino.mkdir(parents=True, exist_ok=True)
     return diretorio_destino

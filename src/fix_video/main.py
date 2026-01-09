@@ -18,7 +18,13 @@ TOTAL_FILES = 0
     metavar="SOURCE",
     required=False,
     default=".",
-    type=click.Path(exists=True, file_okay=False, path_type=str),
+    type=click.Path(
+        exists=True,  # deve existir
+        file_okay=True,  # permite arquivos
+        dir_okay=True,  # permite diretórios
+        # readable=True,        # opcional: deve ser legível
+        path_type=str,  # retorna como str (Python 3.6+ recomenda str em vez de Path)
+    ),
 )
 @click.option(
     "--mode",
