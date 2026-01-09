@@ -27,6 +27,19 @@ TOTAL_FILES = 0
     ),
 )
 @click.option(
+    "--reference_file",
+    "-ref",
+    type=click.Path(
+        exists=True,  # deve existir
+        file_okay=True,  # permite arquivos
+        dir_okay=False,  # permite diretórios
+        path_type=str,  # retorna como str (Python 3.6+ recomenda str em vez de Path)
+    ),
+    required=False,
+    default=None,
+    help="Reference para untrunc",
+)
+@click.option(
     "--mode",
     "-m",
     type=click.Choice(["up", "fix", "compress"], case_sensitive=False),
@@ -54,7 +67,7 @@ TOTAL_FILES = 0
     default=400,
     help='Taxa de bits alvo em kbps para o modo "compress" (400k)',
 )
-def main(source, mode, no_remove, rate, bit_rate):
+def main(source, mode, no_remove, rate, bit_rate, reference_file):
     """
     Fix and optimize video files using FFmpeg.
 
@@ -74,6 +87,7 @@ def main(source, mode, no_remove, rate, bit_rate):
         "speed_factor": rate,
         "bit_rate": bit_rate,
         "remove_original": not no_remove,
+        "reference_file": reference_file,
     }
 
     print(f"Started at {datetime.now().isoformat()}\nRunning in mode: {mode} at path: {ORIGEM}\n")
@@ -97,6 +111,10 @@ def main(source, mode, no_remove, rate, bit_rate):
                 video_fix.fix_video_using_ffmpeg(file, diretorio_destino, mode=mode, **kwargs)
                 TOTAL_FILES += 1
             except Exception as e:
+                # if mode == "fix":
+
+                #     report.insert_line_at_report(REPORT_ERROR, {"file": str(file), "error": str(e)})
+
                 print(f"❌❌ Error processing file {file}: {e} ❌❌")
                 report.insert_line_at_report(REPORT_ERROR, {"file": str(file), "error": str(e)})
 

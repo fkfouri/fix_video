@@ -14,8 +14,11 @@ def GET_MOVIE_INFO():
             movie_path = Path(movie_path)
 
         if movie_path.exists() and movie_path.is_file():
-            info = get_video_info(movie_path)
-            return info
+            try:
+                info = get_video_info(movie_path)
+                return info
+            except Exception:
+                return {}
 
         return {}
 

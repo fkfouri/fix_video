@@ -50,8 +50,9 @@ def get_video_info(filepath: Path) -> dict:
 
     except FileNotFoundError:
         raise RuntimeError("ffprobe não encontrado. Instale o FFmpeg no sistema.")
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Erro ao executar ffprobe: {e.stderr}")
+    except subprocess.CalledProcessError:
+        # raise RuntimeError(f"Erro ao executar ffprobe: {e.stderr}")
+        return {}
     except json.JSONDecodeError:
         raise RuntimeError("ffprobe retornou uma saída inválida (não é JSON).")
     except Exception as e:

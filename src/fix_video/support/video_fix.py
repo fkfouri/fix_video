@@ -26,20 +26,38 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     base_cmd = ["ffmpeg", "-y"]  # -y = sobrescreve sem perguntar
 
     if mode == "fix":
-        # Apenas correção de erros → stream copy (sem reencodar)
-        cmd = (
-            base_cmd
-            + [
-                "-err_detect",
-                "ignore_err",
-                "-i",
+
+        if len(info) > 0:
+            # Apenas correção de erros → stream copy (sem reencodar)
+            cmd = (
+                base_cmd
+                + [
+                    "-err_detect",
+                    "ignore_err",
+                    "-i",
+                    str(original_file),
+                    "-c",
+                    "copy",  # sem reencodar
+                ]
+                + build_metadata_args("fixed")
+                + [str(out_f)]
+            )
+        else:
+            reference_file = kwargs.get("reference_file", None)
+
+            cmd = [
+                "untrunc",
+                str(reference_file),
                 str(original_file),
-                "-c",
-                "copy",  # sem reencodar
             ]
-            + build_metadata_args("fixed")
-            + [str(out_f)]
-        )
+
+            new_name = f"{clean_name}.mp4_fixed{original_file.suffix}"
+            out_f = output_dir / new_name
+
+            if out_f.exists():
+                out_f.unlink()
+                
+            mode = "untrunc"
 
     elif mode in ["compress", "up"]:
         # Reencoda com compressão + aceleração + metadados
@@ -104,7 +122,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
         "start_time": start_time_iso,
         "finish_time": finish_time_iso,
         "processing_time": f"{processing_time} (MM:SS)",
-        "fix_type": FIX_TYPE,
+        "fix_type": mode,
         "speed_applied": "1.75x" if FIX_TYPE == "compress" else "none",
         "metadata_added": "yes",
         "cmd_executed": " ".join(cmd),
