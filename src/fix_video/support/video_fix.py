@@ -3,9 +3,8 @@ from datetime import datetime
 from pathlib import Path
 from time import time
 
-from ...library import build_metadata_args
+from ...library import build_metadata_args, insert_line_at_report
 from ..setup import BIT_RATE, CUSTOM_METADATA, FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
-from .report import insert_line_at_report
 
 
 def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):

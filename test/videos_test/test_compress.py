@@ -10,32 +10,32 @@ from src.fix_video.main import main
     "args, output",
     [
         [
-            ["--mode", "compress", "-nr", "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.mp4"],
-            {"fileout": "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.1},
+            ["--mode", "compress", "-nr", "./test/files/Big_Buck_Bunny_1080_10s_30MB.mp4"],
+            {"fileout": "./test/files/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.1},
         ],
         [
-            ["--mode", "compress", "-nr", "-br", "2000", "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.mp4"],
-            {"fileout": "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.2},
+            ["--mode", "compress", "-nr", "-br", "2000", "./test/files/Big_Buck_Bunny_1080_10s_30MB.mp4"],
+            {"fileout": "./test/files/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.2},
         ],
         [
-            ["--mode", "compress", "-nr", "-br", "8000", "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.mp4"],
-            {"fileout": "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.4},
+            ["--mode", "compress", "-nr", "-br", "8000", "./test/files/Big_Buck_Bunny_1080_10s_30MB.mp4"],
+            {"fileout": "./test/files/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.4},
         ],
         [
-            ["--mode", "compress", "-nr", "-br", ".5", "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.mp4"],
-            {"fileout": "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.5},
+            ["--mode", "compress", "-nr", "-br", ".5", "./test/files/Big_Buck_Bunny_1080_10s_30MB.mp4"],
+            {"fileout": "./test/files/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.5},
         ],
         [
-            ["--mode", "compress", "-nr", "-br", ".25", "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.mp4"],
-            {"fileout": "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.25},
+            ["--mode", "compress", "-nr", "-br", ".25", "./test/files/Big_Buck_Bunny_1080_10s_30MB.mp4"],
+            {"fileout": "./test/files/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.25},
         ],
         [
-            ["--mode", "compress", "-nr", "-br", ".05", "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.mp4"],
-            {"fileout": "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.05},
+            ["--mode", "compress", "-nr", "-br", ".05", "./test/files/Big_Buck_Bunny_1080_10s_30MB.mp4"],
+            {"fileout": "./test/files/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.05},
         ],
         [
-            ["--mode", "compress", "-nr", "-br", ".01", "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.mp4"],
-            {"fileout": "./test/movie_test/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.02},
+            ["--mode", "compress", "-nr", "-br", ".01", "./test/files/Big_Buck_Bunny_1080_10s_30MB.mp4"],
+            {"fileout": "./test/files/Big_Buck_Bunny_1080_10s_30MB.fix.comp.mp4", "fator": 0.02},
         ],
         # ["--mode", "compress", "-nr", "-br", "0.5", "C:/dev/fix_video/origem"],
         # ["--mode", "fIx", "-nr", "C:/dev/fix_video/origem"],
