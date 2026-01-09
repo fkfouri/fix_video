@@ -4,6 +4,7 @@ from pathlib import Path
 import click
 from tqdm import tqdm
 
+from ..library import library
 from . import __version__
 from .setup import ACTUAL_PATH
 from .support import fix_image, image_list
@@ -14,7 +15,7 @@ TOTAL_FILES = 0
 
 
 @click.command()
-@click.version_option(version=__version__, prog_name="fix_video")
+@click.version_option(version=__version__, prog_name="fix_image")
 @click.argument(
     "source",
     metavar="SOURCE",
@@ -62,7 +63,9 @@ def main(source, no_remove):
         if file.is_file():
             print(f"Processing file: {file}")
             try:
-                fix_image(file, DESTINO, **kwargs)
+                diretorio_destino = library.define_destination_directory(file, ORIGEM, DESTINO)
+
+                fix_image(file, diretorio_destino, **kwargs)
                 TOTAL_FILES += 1
             except Exception as e:
                 print(f"❌❌ Error processing file {file}: {e} ❌❌")

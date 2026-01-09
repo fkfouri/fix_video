@@ -14,7 +14,8 @@ def test_main_help_option():
 @pytest.mark.parametrize(
     "args",
     [
-        ["-nr", "./test/images_test"],
+        ["./test/images_test"],
+        # ["-nr", "./test/images_test"],
     ],
     ids=[
         "path",

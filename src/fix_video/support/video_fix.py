@@ -3,8 +3,8 @@ from datetime import datetime
 from pathlib import Path
 from time import time
 
-from ..setup import BIT_RATE, FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
-from .library import build_metadata_args
+from ...library import build_metadata_args
+from ..setup import BIT_RATE, CUSTOM_METADATA, FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
 from .report import insert_line_at_report
 
 
@@ -46,7 +46,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
                     "-c",
                     "copy",  # sem reencodar
                 ]
-                + build_metadata_args("Processed - Fixed")
+                + build_metadata_args("Processed - Fixed", CUSTOM_METADATA)
                 + [str(out_f)]
             )
             run_cmd.append(cmd)
@@ -83,7 +83,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
                     "-c:a",
                     "aac",
                 ]
-                + build_metadata_args("Processed - Untrunced and fixed")
+                + build_metadata_args("Processed - Untrunced and fixed", CUSTOM_METADATA)
                 + [str(out_f)]
             )
             run_cmd.append(cmd)
@@ -98,7 +98,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
         else:
             what = f"Processed - Compress from {original_bit_rate}k to {new_bit_rate}k"
 
-        args = build_metadata_args(what=what)
+        args = build_metadata_args(what=what, metadata=CUSTOM_METADATA)
 
         cmd = (
             base_cmd
