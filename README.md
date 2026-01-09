@@ -75,3 +75,8 @@ ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf 18 -c:a a
 
 ffmpeg -y -err_detect ignore_err -i VID_20211211_181906.mp4 -c copy  VID_20211211_181906.fix.mp4
 ```
+
+
+# Fix Image
+- https://github.com/mozilla/mozjpeg/releases (JPEG)
+- https://pngquant.org/ (PNG)

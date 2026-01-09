@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "click>=8.3.1",
+    "pillow>=12.1.0",
     "pyinstaller>=6.17.0",
     "taskipy>=1.14.1",
     "tqdm>=4.67.1",
@@ -66,5 +67,7 @@ syncro_git = "src.fix:syncro_git"
 pre_lint = { cmd = "echo 'Black' && black .", help = "apply the black linter"}
 lint = { cmd = "ruff check . --fix", help = "apply ruff linter"}
 tree = "uv tree > .pip.tree"
-gen_fix_video = "uv run pyinstaller --onefile --clean --name fix_video.exe --target-arch x86_64 src/launcher.py"
+gen = "task gen_fix_video && task gen_fix_image"
+gen_fix_video = "uv run pyinstaller --onefile --clean --name fix_video.exe --target-arch x86_64 src/launcher_fix_video.py"
+gen_fix_image = "uv run pyinstaller --onefile --clean --name fix_image.exe --target-arch x86_64 src/launcher_fix_image.py"
 gg = 'uv run --frozen pyinstaller --onefile --clean --name fix_video --add-data "src;src" --hidden-import=main --collect-submodules=click --collect-all=click src/main.py --target-arch x86_64'

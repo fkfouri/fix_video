@@ -1,12 +1,10 @@
 from pathlib import Path
 
-from ..setup import CUSTOM_METADATA
 
-
-def build_metadata_args(what="") -> list:
+def build_metadata_args(what="", metadata={}) -> list:
     """Converte o dicionário CUSTOM_METADATA em argumentos do FFmpeg"""
     args = []
-    for key, value in CUSTOM_METADATA.items():
+    for key, value in metadata.items():
         if key not in ["genre"]:  # genre será adicionado separadamente
             args.extend(["-metadata", f"{key}={value}"])
 

@@ -5,8 +5,9 @@ import click
 from tqdm import tqdm
 
 from . import __version__
+from .library import library, report
 from .setup import ACTUAL_PATH, REPORT_ERROR, REPORT_FFPROBE
-from .support import library, report, video_fix, video_info, video_list
+from .support import video_fix, video_info, video_list
 
 TOTAL_FILES = 0
 

@@ -10,8 +10,8 @@ from src.fix_video.main import main
     "args, output",
     [
         [
-            ["--mode", "fix", "-nr", "./test/movie_test/VID_20211211_181906.mp4"],
-            {"fileout": "./test/movie_test/VID_20211211_181906.fix.mp4", "fator": 0.1},
+            ["--mode", "fix", "-nr", "./test/files/VID_20211211_181906.mp4"],
+            {"fileout": "./test/files/VID_20211211_181906.fix.mp4", "fator": 0.1},
         ],
         # ["--mode", "compress", "-nr", "-br", "0.5", "C:/dev/fix_video/origem"],
         # ["--mode", "fIx", "-nr", "C:/dev/fix_video/origem"],
