@@ -83,11 +83,15 @@ def main(source, mode, no_remove, rate, bit_rate, reference_file):
         ORIGEM = Path(source)
         DESTINO = Path(source)
 
+    _ref = None
+    if reference_file is not None:
+        _ref = Path(reference_file)
+
     kwargs = {
         "speed_factor": rate,
         "bit_rate": bit_rate,
         "remove_original": not no_remove,
-        "reference_file": reference_file,
+        "reference_file": _ref,
     }
 
     print(f"Started at {datetime.now().isoformat()}\nRunning in mode: {mode} at path: {ORIGEM}\n")
@@ -96,7 +100,11 @@ def main(source, mode, no_remove, rate, bit_rate, reference_file):
 
     for file in tqdm(video_files):
         info = {}
+
         if file.is_file():
+            if file == _ref:
+                # Ignoring reference
+                continue
             try:
                 info = video_info.get_video_info(file)
                 kwargs["info"] = info
@@ -111,10 +119,6 @@ def main(source, mode, no_remove, rate, bit_rate, reference_file):
                 video_fix.fix_video_using_ffmpeg(file, diretorio_destino, mode=mode, **kwargs)
                 TOTAL_FILES += 1
             except Exception as e:
-                # if mode == "fix":
-
-                #     report.insert_line_at_report(REPORT_ERROR, {"file": str(file), "error": str(e)})
-
                 print(f"❌❌ Error processing file {file}: {e} ❌❌")
                 report.insert_line_at_report(REPORT_ERROR, {"file": str(file), "error": str(e)})
 

@@ -19,7 +19,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     untrunc_name = f"{clean_name}.mp4_fixed{original_file.suffix}"
     untrunc_file = output_dir / untrunc_name
     untrunc_file.unlink(missing_ok=True)
-        
+
     out_f = output_dir / new_name
 
     remove_original = kwargs.get("remove_original", REMOVE)
@@ -46,7 +46,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
                     "-c",
                     "copy",  # sem reencodar
                 ]
-                + build_metadata_args("fixed")
+                + build_metadata_args("Processed - Fixed")
                 + [str(out_f)]
             )
             run_cmd.append(cmd)
@@ -83,6 +83,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
                     "-c:a",
                     "aac",
                 ]
+                + build_metadata_args("Processed - Untrunced and fixed")
                 + [str(out_f)]
             )
             run_cmd.append(cmd)
