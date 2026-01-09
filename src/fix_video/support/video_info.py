@@ -50,8 +50,9 @@ def get_video_info(filepath: Path) -> dict:
 
     except FileNotFoundError:
         raise RuntimeError("ffprobe não encontrado. Instale o FFmpeg no sistema.")
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Erro ao executar ffprobe: {e.stderr}")
+    except subprocess.CalledProcessError:
+        # raise RuntimeError(f"Erro ao executar ffprobe: {e.stderr}")
+        return {}
     except json.JSONDecodeError:
         raise RuntimeError("ffprobe retornou uma saída inválida (não é JSON).")
     except Exception as e:
@@ -79,6 +80,7 @@ def video_should_be_processed(
     if (
         "Processado" in tag_check
         or "Processed" in tag_check
+        or "Compressed" in tag_check
         or re.search(speed_ignore, filename, re.IGNORECASE)
         or re.search(regular_ignore, filename, re.IGNORECASE)
     ):

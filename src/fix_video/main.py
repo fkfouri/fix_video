@@ -12,13 +12,32 @@ TOTAL_FILES = 0
 
 
 @click.command()
-@click.version_option(version=__version__, prog_name="fix-video")
+@click.version_option(version=__version__, prog_name="fix_video")
 @click.argument(
     "source",
     metavar="SOURCE",
     required=False,
     default=".",
-    type=click.Path(exists=True, file_okay=False, path_type=str),
+    type=click.Path(
+        exists=True,  # deve existir
+        file_okay=True,  # permite arquivos
+        dir_okay=True,  # permite diretórios
+        # readable=True,        # opcional: deve ser legível
+        path_type=str,  # retorna como str (Python 3.6+ recomenda str em vez de Path)
+    ),
+)
+@click.option(
+    "--reference_file",
+    "-ref",
+    type=click.Path(
+        exists=True,  # deve existir
+        file_okay=True,  # permite arquivos
+        dir_okay=False,  # permite diretórios
+        path_type=str,  # retorna como str (Python 3.6+ recomenda str em vez de Path)
+    ),
+    required=False,
+    default=None,
+    help="Reference para untrunc",
 )
 @click.option(
     "--mode",
@@ -34,7 +53,21 @@ TOTAL_FILES = 0
     is_flag=True,
     help="No allow removal of original files after processing.",
 )
-def main(source, mode, no_remove):
+@click.option(
+    "-r",
+    "--rate",
+    type=float,
+    default=1.75,
+    help='Valor de aceleração para o modo "up" (1.75x)',
+)
+@click.option(
+    "-br",
+    "--bit-rate",
+    type=float,
+    default=400,
+    help='Taxa de bits alvo em kbps para o modo "compress" (400k)',
+)
+def main(source, mode, no_remove, rate, bit_rate, reference_file):
     """
     Fix and optimize video files using FFmpeg.
 
@@ -50,9 +83,12 @@ def main(source, mode, no_remove):
         ORIGEM = Path(source)
         DESTINO = Path(source)
 
-    if no_remove:
-        global REMOVE
-        REMOVE = False
+    kwargs = {
+        "speed_factor": rate,
+        "bit_rate": bit_rate,
+        "remove_original": not no_remove,
+        "reference_file": reference_file,
+    }
 
     print(f"Started at {datetime.now().isoformat()}\nRunning in mode: {mode} at path: {ORIGEM}\n")
 
@@ -63,6 +99,7 @@ def main(source, mode, no_remove):
         if file.is_file():
             try:
                 info = video_info.get_video_info(file)
+                kwargs["info"] = info
 
                 if video_info.video_should_be_processed(info, file.name) is False:
                     print(f"⏭️ ⏭️  Skipping already processed file: {file} ⏭️ ⏭️ ")
@@ -71,9 +108,13 @@ def main(source, mode, no_remove):
                 report.insert_line_at_report(REPORT_FFPROBE, info)
                 diretorio_destino = library.define_destination_directory(file, ORIGEM, DESTINO)
 
-                video_fix.fix_video_using_ffmpeg(file, diretorio_destino, mode=mode)
+                video_fix.fix_video_using_ffmpeg(file, diretorio_destino, mode=mode, **kwargs)
                 TOTAL_FILES += 1
             except Exception as e:
+                # if mode == "fix":
+
+                #     report.insert_line_at_report(REPORT_ERROR, {"file": str(file), "error": str(e)})
+
                 print(f"❌❌ Error processing file {file}: {e} ❌❌")
                 report.insert_line_at_report(REPORT_ERROR, {"file": str(file), "error": str(e)})
 

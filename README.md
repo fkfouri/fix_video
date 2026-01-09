@@ -33,6 +33,10 @@ sudo apt install ffmpeg -y
 ffmpeg -version
 ```
 
+## Instalar o untrunc
+https://github.com/anthwlock/untrunc/releases
+
+
 Referencia futura
 ```bash
 # quero passar um video mp4 de 30 para 24 frames por segundo, tonar o audio sample de 48 para 44.100 Khz usando o ffmpeg
@@ -69,4 +73,5 @@ ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v copy -c:a copy C:/dev/
 ffmpeg -y -i C:/Users/fkfouri/Downloads/IMG_1933.MOV -c:v libx264 -crf 18 -c:a aac -b:a 128K C:/dev/fix_video/origem/IMG_1933.fix.up.mp4  
 
 
+ffmpeg -y -err_detect ignore_err -i VID_20211211_181906.mp4 -c copy  VID_20211211_181906.fix.mp4
 ```
