@@ -15,6 +15,11 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     clean_name = original_file.stem.replace(".fix", "")
 
     new_name = f"{clean_name}{FIX_FLAG(mode)}{original_file.suffix}"
+
+    untrunc_name = f"{clean_name}.mp4_fixed{original_file.suffix}"
+    untrunc_file = output_dir / untrunc_name
+    untrunc_file.unlink(missing_ok=True)
+        
     out_f = output_dir / new_name
 
     remove_original = kwargs.get("remove_original", REMOVE)
@@ -24,6 +29,8 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     original_bit_rate = int(info.get("format", {}).get("bit_rate", 1)) // 1000
 
     base_cmd = ["ffmpeg", "-y"]  # -y = sobrescreve sem perguntar
+
+    run_cmd = []
 
     if mode == "fix":
 
@@ -42,6 +49,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
                 + build_metadata_args("fixed")
                 + [str(out_f)]
             )
+            run_cmd.append(cmd)
         else:
             reference_file = kwargs.get("reference_file", None)
 
@@ -51,13 +59,33 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
                 str(original_file),
             ]
 
-            new_name = f"{clean_name}.mp4_fixed{original_file.suffix}"
-            out_f = output_dir / new_name
-
-            if out_f.exists():
-                out_f.unlink()
-                
             mode = "untrunc"
+            run_cmd.append(cmd)
+
+            # Reencoda e sincroniza áudio/vídeo
+            # ffmpeg -fflags +genpts -i video_fixed.mp4 -map 0:v -map 0:a? -c:v libx264 -c:a aac video_sync.mp4
+            # ffmpeg -fflags +genpts -i video_fixed.mp4 -map 0:v -map 0:a? -c:v copy -c:a copy video_sync.mp4
+            # ffmpeg -itsoffset -0.8 -i video_fixed.mp4 -map 0:v -map 1:a -c copy video_sync.mp4
+
+            cmd = (
+                base_cmd
+                + [
+                    "-fflags",
+                    "+genpts",
+                    "-i",
+                    str(untrunc_file),
+                    "-map",
+                    "0:v",
+                    "-map",
+                    "0:a?",
+                    "-c:v",
+                    "libx264",
+                    "-c:a",
+                    "aac",
+                ]
+                + [str(out_f)]
+            )
+            run_cmd.append(cmd)
 
     elif mode in ["compress", "up"]:
         # Reencoda com compressão + aceleração + metadados
@@ -89,6 +117,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
             + args
             + [str(out_f)]
         )
+        run_cmd.append(cmd)
     elif FIX_TYPE == "convert":
         ...
         # Converte MOV (ou qualquer) → .mpeg (H.264/AAC)
@@ -96,14 +125,16 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
         # cmd += ["-c:v", "libx264", "-crf", "23", "-preset", "medium"]
         # cmd += ["-c:a", "aac", "-b:a", "128k", "-vf", "format=yuv420p"]
         # cmd += get_metadata() + [str(outfile)]
-
+        # run_cmd.append(cmd)
     else:
         raise ValueError("FIX_TYPE deve ser 'error' ou 'compress'")
 
     start_time_iso = datetime.now().isoformat()
     start = time()
 
-    exit_code = subprocess.call(cmd)
+    for cmd in run_cmd:
+        exit_code = subprocess.call(cmd)
+
     print(f"\n🟢🟢 fixed video:{original_file}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n")
     out_f = Path(out_f)
 
@@ -131,7 +162,8 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     insert_line_at_report(REPORT_COMPRESS, report)
 
     if remove_original:
-        original_file.unlink()
+        original_file.unlink(missing_ok=True)
+    untrunc_file.unlink(missing_ok=True)
 
 
 def get_video_bit_rate(bit_rate, original_bit_rate) -> str:
