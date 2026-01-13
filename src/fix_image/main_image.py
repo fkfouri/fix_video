@@ -67,13 +67,17 @@ def main(source, no_remove, set_date):
 
     files = image_list.list_image_in_directory(ORIGEM)
 
-    for file in tqdm(files):
-        if file.is_file():
-            print(f"Processing file: {file}")
-            try:
-                diretorio_destino = library.define_destination_directory(file, ORIGEM, DESTINO)
+    with tqdm(enumerate(files), total=len(files), desc="Processando") as pbar:
+        for idx, file in pbar:
 
-                fix_image(file, diretorio_destino, **kwargs)
-                TOTAL_FILES += 1
-            except Exception as e:
-                print(f"❌❌ Error processing file {file}: {e} ❌❌")
+            if file.is_file():
+                total = pbar.total
+                kwargs = kwargs | {"index": idx + 1, "total": total}
+                print(f"Processing file: {idx}/{total}: {file}")
+                try:
+                    diretorio_destino = library.define_destination_directory(file, ORIGEM, DESTINO)
+
+                    fix_image(file, diretorio_destino, **kwargs)
+                    TOTAL_FILES += 1
+                except Exception as e:
+                    print(f"❌❌ Error processing file {file}: {e} ❌❌")
