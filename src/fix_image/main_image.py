@@ -73,7 +73,7 @@ def main(source, no_remove, set_date):
             if file.is_file():
                 total = pbar.total
                 kwargs = kwargs | {"index": idx + 1, "total": total}
-                print(f"Processing file: {idx}/{total}: {file}")
+                print(f"  Processing file: {idx}/{total}: {file}")
                 try:
                     diretorio_destino = library.define_destination_directory(file, ORIGEM, DESTINO)
 
