@@ -35,7 +35,14 @@ TOTAL_FILES = 0
     is_flag=True,
     help="No allow removal of original files after processing.",
 )
-def main(source, no_remove):
+@click.option(
+    "-sd",
+    "--set-date",
+    is_flag=True,
+    default=True,
+    help="Set the date of the image.",
+)
+def main(source, no_remove, set_date):
     """
     Fix image files with EXIF data.
 
@@ -53,6 +60,7 @@ def main(source, no_remove):
 
     kwargs = {
         "remove_original": not no_remove,
+        "set_date": set_date,
     }
 
     print(f"Started at {datetime.now().isoformat()}\n in the source path: {ORIGEM}\n")

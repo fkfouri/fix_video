@@ -4,6 +4,7 @@ from pathlib import Path
 
 from PIL import Image
 
+from ..library import get_early_time, has_date_in_filename
 from ..setup import JPEG_QUALITY, PNG_QUALITY, REMOVE
 
 
@@ -13,7 +14,18 @@ def fix_image(input_path: Path, output_dir: Path, **kwargs):
     """
     clean_name = input_path.stem
     ext = input_path.suffix.lower()
-    new_name = f"{clean_name}_fixed{ext}"
+
+    _out_name = [clean_name]
+
+    _set_date = kwargs.get("set_date", True)
+
+    if _set_date:
+        if not has_date_in_filename(input_path):
+            _out_name.append(get_early_time(input_path))
+
+    _out_name.append("fixed")
+
+    new_name = f"{"_".join(_out_name)}{ext}"
     output_path = output_dir / new_name
 
     remove_original = kwargs.get("remove_original", REMOVE)

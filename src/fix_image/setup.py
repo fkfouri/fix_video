@@ -18,5 +18,6 @@ DESTINO = ACTUAL_PATH
 JPEG_QUALITY = 75
 PNG_QUALITY = "70-85"
 REMOVE = True
+DATE_STANDARD = "%Y%m%d"
 
 PADROES = ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.tiff", "*.webp"]

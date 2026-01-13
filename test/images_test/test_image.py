@@ -22,6 +22,10 @@ def test_main_help_option():
     ],
 )
 def test_path(args):
+    """
+    Este teste gera arquivos _fixed na pasta de teste.
+    Estes arquivos devem ser ignorados
+    """
     runner = CliRunner()
     result = runner.invoke(main, args)
     print(result.exit_code)  # -> 2
