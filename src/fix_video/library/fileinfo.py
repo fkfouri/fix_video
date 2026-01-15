@@ -55,7 +55,7 @@ def limpar_e_normalizar_nome_arquivo(
         if preferir_iso:
             data_formatada = dt.strftime("%Y-%m-%d")
         else:
-            data_formatada = dt.strftime("%Y%m%d")
+            data_formatada = dt.strftime("%Y.%m.%d")
 
         novo_nome = formato_saida.format(data_hora=data_formatada, base=nome_limpo, ext=extensao)
 
@@ -71,7 +71,7 @@ def limpar_e_normalizar_nome_arquivo(
     if preferir_iso:
         data_formatada = dt.strftime("%Y-%m-%d")
     else:
-        data_formatada = dt.strftime("%Y%m%d")
+        data_formatada = dt.strftime("%Y.%m.%d")
 
     # Remove o trecho exato que foi reconhecido como data
     # Usamos re.escape para escapar caracteres especiais (. - _ etc)
