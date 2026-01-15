@@ -16,6 +16,7 @@ REPORT_ERROR = ACTUAL_PATH / "__error_report.json"
 # ACTUAL_PATH = Path("C:/dev/fix_video/origem")
 ORIGEM = ACTUAL_PATH
 DESTINO = ACTUAL_PATH
+DATE_STANDARD = "%Y%m%d"
 
 # # ORIGEM = Path("/mnt/c/Users/fkfouri/Downloads")
 # # ORIGEM = Path("/mnt/c/Users/fkfouri/OneDrive/Imagens/Screenpresso")

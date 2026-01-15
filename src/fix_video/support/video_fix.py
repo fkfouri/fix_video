@@ -3,19 +3,31 @@ from datetime import datetime
 from pathlib import Path
 from time import time
 
-from ..library import build_metadata_args, insert_line_at_report
+from ..library import build_metadata_args, insert_line_at_report, limpar_e_normalizar_nome_arquivo
 from ..setup import BIT_RATE, CUSTOM_METADATA, FIX_FLAG, FIX_TYPE, REMOVE, REPORT_COMPRESS, SPEED_UP
 
 
-def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
+def fix_video_using_ffmpeg(input_dir: Path, output_dir, mode, **kwargs):
     """
     TODO: fazer a quantidade de quadros por segundo
     """
-    clean_name = original_file.stem.replace(".fix", "")
+    clean_name = input_dir.stem.replace(".fix", "")
+    ext = input_dir.suffix.lower()
+    _set_date = kwargs.get("set_date", True)
 
-    new_name = f"{clean_name}{FIX_FLAG(mode)}{original_file.suffix}"
+    _out_name = []
 
-    untrunc_name = f"{clean_name}.mp4_fixed{original_file.suffix}"
+    if _set_date:
+        clean_name = limpar_e_normalizar_nome_arquivo(input_dir)
+
+    _out_name.append(clean_name)
+    _out_name.append(FIX_FLAG(mode))
+
+    new_name = f"{"_".join(_out_name)}{ext}"
+
+    # new_name = f"{clean_name}{FIX_FLAG(mode)}{ext}"
+
+    untrunc_name = f"{clean_name}.mp4_fixed{ext}"
     untrunc_file = output_dir / untrunc_name
     untrunc_file.unlink(missing_ok=True)
 
@@ -41,7 +53,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
                     "-err_detect",
                     "ignore_err",
                     "-i",
-                    str(original_file),
+                    str(input_dir),
                     "-c",
                     "copy",  # sem reencodar
                 ]
@@ -55,7 +67,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
             cmd = [
                 "untrunc",
                 str(reference_file),
-                str(original_file),
+                str(input_dir),
             ]
 
             mode = "untrunc"
@@ -103,7 +115,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
             base_cmd
             + [
                 "-i",
-                str(original_file),
+                str(input_dir),
                 # "-r",
                 # "24",  # força 24 fps
                 "-b:v",
@@ -135,7 +147,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     for cmd in run_cmd:
         exit_code = subprocess.call(cmd)
 
-    print(f"\n🟢🟢 fixed video:{original_file}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n")
+    print(f"\n🟢🟢 fixed video:{input_dir}, output: {out_f}, exist_code: {exit_code}🟢🟢\n\n")
     out_f = Path(out_f)
 
     finish_time_iso = datetime.now().isoformat()
@@ -146,8 +158,8 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     processing_time = f"{int(minutes):02d}:{int(seconds):02d}"
 
     report = {
-        "original": "/".join(original_file.parts[-4:]),
-        "original_size_mb": f"{original_file.stat().st_size / 1024**2:.2f}",
+        "original": "/".join(input_dir.parts[-4:]),
+        "original_size_mb": f"{input_dir.stat().st_size / 1024**2:.2f}",
         "final": "/".join(out_f.parts[-4:]),
         "final_size_mb": f"{out_f.stat().st_size / 1024**2:.2f}",
         "start_time": start_time_iso,
@@ -162,7 +174,7 @@ def fix_video_using_ffmpeg(original_file: Path, output_dir, mode, **kwargs):
     insert_line_at_report(REPORT_COMPRESS, report)
 
     if remove_original:
-        original_file.unlink(missing_ok=True)
+        input_dir.unlink(missing_ok=True)
     untrunc_file.unlink(missing_ok=True)
 
 

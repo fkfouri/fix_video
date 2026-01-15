@@ -8,29 +8,20 @@ from ..library import limpar_e_normalizar_nome_arquivo
 from ..setup import JPEG_QUALITY, PNG_QUALITY, REMOVE
 
 
-def fix_image(input_path: Path, output_dir: Path, **kwargs):
+def fix_image(input_dir: Path, output_dir: Path, **kwargs):
     """
     Compress image
     """
-    clean_name = input_path.stem
-    ext = input_path.suffix.lower()
+    clean_name = input_dir.stem
+    ext = input_dir.suffix.lower()
     _set_date = kwargs.get("set_date", True)
 
     _out_name = []
 
     if _set_date:
-        clean_name = limpar_e_normalizar_nome_arquivo(input_path)
-        _out_name.append(clean_name)
+        clean_name = limpar_e_normalizar_nome_arquivo(input_dir)
 
-        # if has_date_in_filename(input_path):
-        #     clean_name = remover_data_do_arquivo(clean_name).strip()
-        #     if len(clean_name) <= 0:
-        #         clean_name = f"image_{kwargs.get('index'):04d}"
-
-        # _out_name.append(clean_name)
-        # _out_name.append(get_early_time(input_path))
-    else:
-        _out_name.append(clean_name)
+    _out_name.append(clean_name)
 
     new_name = f"{"_".join(_out_name)}"
     output_path = output_dir / new_name
@@ -38,9 +29,9 @@ def fix_image(input_path: Path, output_dir: Path, **kwargs):
     remove_original = kwargs.get("remove_original", REMOVE)
 
     if ext in (".jpg", ".jpeg"):
-        compress_jpeg(input_path, output_path)
+        compress_jpeg(input_dir, output_path)
     elif ext == ".png":
-        compress_png(input_path, output_path)
+        compress_png(input_dir, output_path)
     else:
         raise ValueError(f"Formato não suportado: {ext}")
 
@@ -60,7 +51,7 @@ def fix_image(input_path: Path, output_dir: Path, **kwargs):
     # subprocess.run(cmd, check=True)
 
     if remove_original:
-        input_path.unlink(missing_ok=True)
+        input_dir.unlink(missing_ok=True)
 
 
 def has_binary(name: str) -> bool:

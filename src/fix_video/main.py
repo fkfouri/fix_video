@@ -41,6 +41,13 @@ TOTAL_FILES = 0
     help="Reference para untrunc",
 )
 @click.option(
+    "-sd",
+    "--set-date",
+    is_flag=True,
+    default=True,
+    help="Set the date of the image.",
+)
+@click.option(
     "--mode",
     "-m",
     type=click.Choice(["up", "fix", "compress"], case_sensitive=False),
@@ -68,7 +75,7 @@ TOTAL_FILES = 0
     default=400,
     help='Taxa de bits alvo em kbps para o modo "compress" (400k)',
 )
-def main(source, mode, no_remove, rate, bit_rate, reference_file):
+def main(source, mode, no_remove, rate, bit_rate, reference_file, set_date):
     """
     Fix and optimize video files using FFmpeg.
 
@@ -93,6 +100,7 @@ def main(source, mode, no_remove, rate, bit_rate, reference_file):
         "bit_rate": bit_rate,
         "remove_original": not no_remove,
         "reference_file": _ref,
+        "set_date": set_date,
     }
 
     print(f"Started at {datetime.now().isoformat()}\nRunning in mode: {mode} at path: {ORIGEM}\n")

@@ -89,6 +89,58 @@ def limpar_e_normalizar_nome_arquivo(
     return novo_nome
 
 
+def _extrair_hora_do_nome(nome: str, texto_encontrado: str) -> str | None:
+    """
+    Tenta extrair hora do nome do arquivo usando padrões comuns.
+    Procura por padrões próximos ao texto de data detectado.
+
+    Padrões reconhecidos:
+        14h35, 14H35
+        14:35, 14.35
+        14-35
+        143500, 143545
+        às 14:35, às 14-35
+    """
+    # Encontra a posição do texto de data no nome
+    pos = nome.find(texto_encontrado)
+    if pos == -1:
+        return None
+
+    # Procura por hora próxima à data (antes ou depois)
+    contexto_antes = nome[:pos] if pos > 0 else ""
+    contexto_depois = nome[pos + len(texto_encontrado) :]
+    contexto_completo = contexto_antes + " " + contexto_depois
+
+    # Padrões de hora: HHhMM, HH:MM, HH.MM, HH-MM, HHMMSS
+    padroes = [
+        (r"(\d{1,2})[hH](\d{2})", "%H%M"),  # 14h35 ou 14H35
+        (r"(\d{1,2}):(\d{2})(?::(\d{2}))?", None),  # 14:35 ou 14:35:30
+        (r"(\d{1,2})\.(\d{2})(?:\.(\d{2}))?", "%H%M"),  # 14.35 ou 14.35.30
+        (r"(\d{1,2})-(\d{2})(?:-(\d{2}))?", "%H%M"),  # 14-35 ou 14-35-30
+        (r"(\d{6})", "%H%M%S"),  # 143500
+    ]
+
+    for padrao, formato in padroes:
+        match = re.search(padrao, contexto_completo)
+        if match:
+            grupos = match.groups()
+            try:
+                h = int(grupos[0])
+                m = int(grupos[1]) if len(grupos) > 1 else 0
+                s = int(grupos[2]) if len(grupos) > 2 else 0
+
+                # Valida os valores
+                if 0 <= h <= 23 and 0 <= m <= 59 and 0 <= s <= 59:
+                    if s > 0:
+                        return f"{h:02d}{m:02d}{s:02d}"
+                    else:
+                        return f"{h:02d}{m:02d}"
+            except (ValueError, IndexError):
+                continue
+
+    return None
+
+
 def blimpar_e_normalizar_nome_arquivo(
     caminho: str | Path,
     idiomas_prioritarios: list[str] = ["pt", "en"],
@@ -115,6 +167,8 @@ def blimpar_e_normalizar_nome_arquivo(
         foto 15.10.2023 14h35
         IMG_20250630_183245
         relatorio 2024.08.12 às 09-15 v2
+        2024-05-17 14:35:45
+        2024-05-17T14:35:45
     """
     caminho = Path(caminho)
     nome = caminho.stem
@@ -155,13 +209,19 @@ def blimpar_e_normalizar_nome_arquivo(
     # Formata a parte da data
     data_str = dt.strftime("%Y%m%d")
 
-    # Hora só se for diferente de 00:00 (muitos parsers chutam 00:00 quando não tem hora)
+    # Tenta extrair hora do dateparser primeiro
     hora_str = ""
-    if dt.hour > 0 or dt.minute > 0:
+    if dt.hour > 0 or dt.minute > 0 or dt.second > 0:
+        # Hora foi detectada pelo dateparser
         if manter_segundos and dt.second > 0:
             hora_str = dt.strftime("%H%M%S")
         else:
             hora_str = dt.strftime("%H%M")
+    else:
+        # Tenta extrair hora manualmente procurando padrões no nome
+        hora_extraida = _extrair_hora_do_nome(nome, texto_encontrado)
+        if hora_extraida:
+            hora_str = hora_extraida
 
     data_hora = f"{data_str}_{hora_str}" if hora_str else data_str
 
