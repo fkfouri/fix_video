@@ -11,7 +11,7 @@ def limpar_e_normalizar_nome_arquivo(
     file_path: str | Path,
     preferir_ultima_data: bool = True,  # True = pega a última data encontrada
     # formato_data_hora: str = "{date}_{time}" if time else "{date}",  # placeholder
-    formato_saida: str = "{data_hora} - {base}.fixed{ext}",
+    formato_saida: str = "{data_hora} - {base}",
     preferir_iso: bool = False,  # False = yyyymmdd, True = yyyy-mm-dd
 ) -> str:
     """
@@ -21,7 +21,7 @@ def limpar_e_normalizar_nome_arquivo(
     """
     caminho = Path(file_path)
     nome_original = caminho.stem  # sem extensão
-    extensao = caminho.suffix.lower()
+    dt_file = get_early_time(caminho, formatted=False)
 
     tentativas = ["", "_"]
     for i, tentativa in enumerate(tentativas):
@@ -47,17 +47,14 @@ def limpar_e_normalizar_nome_arquivo(
             break
 
     if not encontradas:
-        # Monta o novo nome
-        nome_limpo = caminho.stem
-        dt = get_early_time(caminho, formatted=False)
 
         # Formata a data no padrão desejado
         if preferir_iso:
-            data_formatada = dt.strftime("%Y-%m-%d")
+            data_formatada = dt_file.strftime("%Y-%m-%d")
         else:
-            data_formatada = dt.strftime("%Y.%m.%d")
+            data_formatada = dt_file.strftime("%Y.%m.%d")
 
-        novo_nome = formato_saida.format(data_hora=data_formatada, base=nome_limpo, ext=extensao)
+        novo_nome = formato_saida.format(data_hora=data_formatada, base=nome_original)
 
         return novo_nome  # nenhuma data detectada
 
@@ -66,6 +63,8 @@ def limpar_e_normalizar_nome_arquivo(
         texto_data, dt = encontradas[-1]
     else:
         texto_data, dt = encontradas[0]
+
+    dt = min(dt, dt_file)  # escolhe a data mais antiga entre nome e arquivo
 
     # Formata a data no padrão desejado
     if preferir_iso:
@@ -81,10 +80,10 @@ def limpar_e_normalizar_nome_arquivo(
     # Remove separadores duplicados ou sobrando no início/fim
     nome_limpo = re.sub(r"[-_. ]{2,}", " ", nome_limpo).strip(" -_.")
     if not nome_limpo:
-        nome_limpo = "arquivo"
+        nome_limpo = texto_data
 
     # Monta o novo nome
-    novo_nome = formato_saida.format(data_hora=data_formatada, base=nome_limpo, ext=extensao)
+    novo_nome = formato_saida.format(data_hora=data_formatada, base=nome_limpo)
 
     return novo_nome
 

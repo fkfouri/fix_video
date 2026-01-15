@@ -29,7 +29,7 @@ REMOVE = True
 FIX_TYPE = "compress"
 REGULAR_IGNORE = r".fix\.mp4$"
 SPEED_IGNORE = r".fix\.up\.mp4$"
-PADROES = ["*.mp4", "*.mov", "*.avi", "*.mkv", "*.webm", "*.m4v"]
+PADROES = ["*.mp4", "*.mov", "*.avi", "*.mkv", "*.webm", "*.m4v", ".3gp"]
 BIT_RATE = 400  # kbps para compressão
 
 # METADADOS que serão adicionados em TODOS os vídeos processados

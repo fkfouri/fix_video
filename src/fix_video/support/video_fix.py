@@ -13,6 +13,9 @@ def fix_video_using_ffmpeg(input_dir: Path, output_dir, mode, **kwargs):
     """
     clean_name = input_dir.stem.replace(".fix", "")
     ext = input_dir.suffix.lower()
+    if ext != ".mp4":
+        ext = ".mp4"
+
     _set_date = kwargs.get("set_date", True)
 
     _out_name = []
@@ -23,7 +26,7 @@ def fix_video_using_ffmpeg(input_dir: Path, output_dir, mode, **kwargs):
     _out_name.append(clean_name)
     _out_name.append(FIX_FLAG(mode))
 
-    new_name = f"{"_".join(_out_name)}{ext}"
+    new_name = f"{"".join(_out_name)}{ext}"
 
     # new_name = f"{clean_name}{FIX_FLAG(mode)}{ext}"
 
