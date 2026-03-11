@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 import click
 import whisper
@@ -27,7 +28,15 @@ def main(source):
 
     """
     # Carrega o modelo (base é rápido; opções: tiny, small, medium, large)
-    model = whisper.load_model("base")
+    # model = whisper.load_model("base")
+
+    # C:\Users\<user>\.cache\whisper\base.pt
+    model_path = Path(os.path.join(os.path.dirname(__file__), "base.pt"))
+    if not model_path.exists():
+        model = whisper.load_model("base")
+
+    model = whisper.load_model(model_path)
+
     in_f = Path(source)
     if not in_f.is_file():
         print(f"❌ O caminho '{source}' não é um arquivo válido. Por favor, forneça um arquivo de áudio ou vídeo.")
@@ -38,9 +47,9 @@ def main(source):
     # Transcreve arquivo (ex: MPG ou MP3)
     result = model.transcribe(source, language="pt")  # 'pt' para português
 
-    text = result["text"]
+    text = result["text"].strip()  # Remove espaços extras
     out_f.write_text(text, encoding="utf-8")
 
-    print(result["text"])  # Texto transcrito
+    print(text)  # Texto transcrito
 
     print(f"\n🚀🚀 Transcript Video v{__version__} 🚀🚀")
