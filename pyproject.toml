@@ -7,11 +7,19 @@ requires-python = ">=3.14"
 dependencies = [
     "click>=8.3.1",
     "dateparser>=1.2.2",
-    "openai-whisper>=20250625",
+    "openai-whisper==20250625",
     "pillow>=12.1.0",
     "pyinstaller>=6.17.0",
     "taskipy>=1.14.1",
     "tqdm>=4.67.1",
+]
+
+[tool.uv]
+# openai-whisper does not pin a torch version itself, so without this
+# constraint uv re-resolves to the newest torch (huge download) on every
+# fresh sync that lacks a cached uv.lock.
+constraint-dependencies = [
+    "torch==2.10.0",
 ]
 
 [dependency-groups]
