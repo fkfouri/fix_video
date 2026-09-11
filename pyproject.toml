@@ -78,6 +78,7 @@ pre_lint = { cmd = "echo 'Black' && black .", help = "apply the black linter"}
 lint = { cmd = "ruff check . --fix", help = "apply ruff linter"}
 tree = "uv tree > .pip.tree"
 gen = "task gen_fix_video && task gen_fix_image && task gen_transcript"
+pre_gen_fix_video = { cmd = "uv run python src/check_windows_shell.py", help = "abort gen_fix_video if not running in cmd/PowerShell" }
 gen_fix_video = "uv run pyinstaller --onefile --clean --name fix_video.exe --target-arch x86_64 src/launcher_fix_video.py"
 post_gen_fix_video = { cmd = "uv run python -c \"import shutil, pathlib; dest = pathlib.Path('../sw'); dest.mkdir(parents=True, exist_ok=True); shutil.move('dist/fix_video.exe', dest / 'fix_video.exe')\"", help = "move generated fix_video.exe to ../sw" }
 gen_fix_image = "uv run pyinstaller --onefile --clean --name fix_image.exe --target-arch x86_64 src/launcher_fix_image.py"
