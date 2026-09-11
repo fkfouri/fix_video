@@ -12,7 +12,12 @@ from .support import video_fix, video_info, video_list
 TOTAL_FILES = 0
 
 
-@click.command()
+@click.command(
+    help=(
+        f"Fix and optimize video files using FFmpeg. (v{__version__})\n\n"
+        "SOURCE is the path to the file or directory to be processed."
+    )
+)
 @click.version_option(version=__version__, prog_name="fix_video")
 @click.argument(
     "source",
@@ -44,7 +49,7 @@ TOTAL_FILES = 0
     "-sd",
     "--set-date",
     is_flag=True,
-    default=True,
+    default=False,
     help="Set the date of the image.",
 )
 @click.option(
@@ -76,11 +81,6 @@ TOTAL_FILES = 0
     help='Taxa de bits alvo em kbps para o modo "compress" (400k)',
 )
 def main(source, mode, no_remove, rate, bit_rate, reference_file, set_date):
-    """
-    Fix and optimize video files using FFmpeg.
-
-    SOURCE is the path to the file or directory to be processed.
-    """
     global TOTAL_FILES
     print(f"\n🚀🚀 Fix Video v{__version__} 🚀🚀")
 

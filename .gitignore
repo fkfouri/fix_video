@@ -1,6 +1,7 @@
 .venv
 .git
 *.lock
+!uv.lock
 /src/*.json
 __pycache__
 origem
@@ -17,3 +18,5 @@ __ffprobe_report.*
 __compress_report_ffmpeg.*
 __error_report.*
 *.pt
+
+credentials
