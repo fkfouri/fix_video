@@ -17,3 +17,5 @@ __ffprobe_report.*
 __compress_report_ffmpeg.*
 __error_report.*
 *.pt
+
+credentials
